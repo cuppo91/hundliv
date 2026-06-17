@@ -41,7 +41,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const article = getArticleBySlug(params.slug)
   const city = getCityConfig()
 
-  if (!article || article.cityId !== city.id) notFound()
+  if (!article) notFound()
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
