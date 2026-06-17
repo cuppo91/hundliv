@@ -77,16 +77,7 @@ export default function PlaceCard({ place, onClick }: { place: Place; onClick?: 
             <span className="text-xs text-stone-300">Inget betyg</span>
           )}
 
-          {place.website && (
-            <a
-              href={place.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
-            >
-              Besök →
-            </a>
-          )}
+          <span className="text-xs text-stone-300">Tryck för info →</span>
         </div>
       </div>
     </div>
