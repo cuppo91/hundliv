@@ -29,7 +29,9 @@ export default function Home() {
           ...(category !== 'all' ? { category } : {}),
         };
 
-        let query = supabase.from('places').select('*').order('rating', { ascending: false });
+        let query = supabase.from('places').select('*')
+          .order('sponsored', { ascending: false })
+          .order('rating', { ascending: false });
         for (const [key, value] of Object.entries(filters)) {
           query = query.eq(key, value);
         }

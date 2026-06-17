@@ -20,6 +20,7 @@ export type Place = {
   rating: number | null
   photo_url: string | null
   status: 'pending' | 'approved' | 'rejected'
+  sponsored: boolean
   submitted_by: string | null
   submission_note: string | null
   created_at: string

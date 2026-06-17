@@ -58,6 +58,12 @@ export default function PlaceCard({ place, onClick }: { place: Place; onClick?: 
         <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${CATEGORY_COLOR[place.category] ?? 'bg-stone-100 text-stone-600'}`}>
           {CATEGORY_LABEL[place.category] ?? place.category}
         </span>
+        {/* Sponsored badge */}
+        {place.sponsored && (
+          <span className="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-400 text-yellow-900">
+            ★ Sponsrad
+          </span>
+        )}
       </div>
 
       {/* Content */}

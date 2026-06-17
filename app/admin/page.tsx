@@ -22,8 +22,9 @@ type Report = {
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState('');
-  const [tab, setTab] = useState<'pending' | 'reports'>('pending');
+  const [tab, setTab] = useState<'pending' | 'reports' | 'sponsored'>('pending');
   const [places, setPlaces] = useState<Place[]>([]);
+  const [allPlaces, setAllPlaces] = useState<Place[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -41,15 +42,28 @@ export default function AdminPage() {
     setLoading(false);
   }
 
+  async function loadAllPlaces() {
+    setLoading(true);
+    const { data } = await supabase.from('places').select('*').eq('status', 'approved').order('sponsored', { ascending: false }).order('name');
+    setAllPlaces(data ?? []);
+    setLoading(false);
+  }
+
   useEffect(() => {
     if (!authed) return;
     if (tab === 'pending') loadPending();
-    else loadReports();
+    else if (tab === 'reports') loadReports();
+    else loadAllPlaces();
   }, [authed, tab]);
 
   async function updateStatus(id: string, status: 'approved' | 'rejected') {
     await supabase.from('places').update({ status }).eq('id', id);
     setPlaces(p => p.filter(x => x.id !== id));
+  }
+
+  async function toggleSponsored(id: string, current: boolean) {
+    await supabase.from('places').update({ sponsored: !current }).eq('id', id);
+    setPlaces(p => p.map(x => x.id === id ? { ...x, sponsored: !current } : x));
   }
 
   if (!authed) return (
@@ -82,12 +96,40 @@ export default function AdminPage() {
             style={tab === 'reports' ? { background: '#29C4D8' } : {}}>
             Rapporter ({reports.length})
           </button>
+          <button onClick={() => setTab('sponsored')}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${tab === 'sponsored' ? 'bg-yellow-400 text-yellow-900' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}>
+            Sponsra ställen
+          </button>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {loading ? (
           <p className="text-stone-400 text-center py-20">Laddar...</p>
+        ) : tab === 'sponsored' ? (
+          allPlaces.length === 0 ? (
+            <p className="text-stone-400 text-center py-20">Inga ställen hittade.</p>
+          ) : (
+            <div className="space-y-3">
+              {allPlaces.map(place => (
+                <div key={place.id} className={`bg-white rounded-xl border p-4 flex items-center justify-between gap-4 ${place.sponsored ? 'border-yellow-300 bg-yellow-50' : 'border-stone-200'}`}>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-semibold text-stone-900">{place.name}</p>
+                      {place.sponsored && <span className="text-xs bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full font-semibold">★ Sponsrad</span>}
+                      <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">{place.city_id}</span>
+                    </div>
+                    <p className="text-xs text-stone-400 mt-0.5">{place.category} — {place.address}</p>
+                  </div>
+                  <button
+                    onClick={() => { toggleSponsored(place.id, place.sponsored); setAllPlaces(p => p.map(x => x.id === place.id ? { ...x, sponsored: !x.sponsored } : x)); }}
+                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold ${place.sponsored ? 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300' : 'bg-stone-100 text-stone-600 hover:bg-yellow-100'}`}>
+                    {place.sponsored ? 'Ta bort sponsor' : 'Sponsra'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )
         ) : tab === 'pending' ? (
           places.length === 0 ? (
             <div className="text-center py-20 text-stone-400"><p className="text-4xl mb-3">✅</p><p>Inga tips att granska!</p></div>
@@ -109,9 +151,12 @@ export default function AdminPage() {
                         {place.website && <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-cyan-600 hover:underline">{place.website}</a>}
                       </div>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex gap-2 flex-shrink-0 flex-wrap">
                       <button onClick={() => updateStatus(place.id, 'approved')} className="px-4 py-2 rounded-full text-white text-sm font-semibold bg-emerald-500 hover:bg-emerald-600">Godkänn</button>
                       <button onClick={() => updateStatus(place.id, 'rejected')} className="px-4 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200">Avvisa</button>
+                      <button onClick={() => toggleSponsored(place.id, place.sponsored)} className={`px-4 py-2 rounded-full text-sm font-semibold ${place.sponsored ? 'bg-yellow-400 text-yellow-900' : 'bg-stone-100 text-stone-600 hover:bg-yellow-100'}`}>
+                        {place.sponsored ? '★ Sponsrad' : 'Sponsra'}
+                      </button>
                     </div>
                   </div>
                 </div>
