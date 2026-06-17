@@ -41,7 +41,7 @@ async function searchPlaces(query: string, location: string): Promise<GooglePlac
   url.searchParams.set('key', GOOGLE_API_KEY)
 
   const res = await fetch(url.toString())
-  const data = await res.json()
+  const data = await res.json() as { results?: GooglePlace[] }
   return data.results ?? []
 }
 
@@ -52,7 +52,7 @@ async function getPlaceDetails(placeId: string): Promise<Partial<GooglePlace>> {
   url.searchParams.set('key', GOOGLE_API_KEY)
 
   const res = await fetch(url.toString())
-  const data = await res.json()
+  const data = await res.json() as { result?: Partial<GooglePlace> }
   return data.result ?? {}
 }
 
