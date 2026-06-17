@@ -36,9 +36,9 @@ const FALLBACK_EMOJI: Record<string, string> = {
   vet: '🏥',
 };
 
-export default function PlaceCard({ place }: { place: Place }) {
+export default function PlaceCard({ place, onClick }: { place: Place; onClick?: () => void }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 border border-stone-100">
+    <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 border border-stone-100 cursor-pointer">
       {/* Image */}
       <div className="relative h-44 overflow-hidden">
         {place.photo_url ? (

@@ -9,6 +9,7 @@ import AdBanner from "@/components/AdBanner";
 import { supabase, Place } from "@/lib/supabase";
 import { getCityConfig } from "@/config/cities";
 import SubmitPlaceModal from "@/components/SubmitPlaceModal";
+import PlaceModal from "@/components/PlaceModal";
 
 export default function Home() {
   const city = getCityConfig();
@@ -16,6 +17,7 @@ export default function Home() {
   const [category, setCategory] = useState<Category>('all');
   const [loading, setLoading] = useState(true);
   const [showSubmit, setShowSubmit] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -39,6 +41,7 @@ export default function Home() {
       <Header />
       <Hero onSubmitClick={() => setShowSubmit(true)} />
       {showSubmit && <SubmitPlaceModal onClose={() => setShowSubmit(false)} />}
+      {selectedPlace && <PlaceModal place={selectedPlace} onClose={() => setSelectedPlace(null)} />}
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 space-y-6">
         <AdBanner slot="top" />
@@ -70,7 +73,7 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {places.map((place) => (
-              <PlaceCard key={place.id} place={place} />
+              <PlaceCard key={place.id} place={place} onClick={() => setSelectedPlace(place)} />
             ))}
           </div>
         )}
