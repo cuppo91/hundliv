@@ -94,11 +94,49 @@ async function searchPlaces(query, location) {
 async function getPlaceDetails(placeId) {
   const url = new URL('https://maps.googleapis.com/maps/api/place/details/json')
   url.searchParams.set('place_id', placeId)
-  url.searchParams.set('fields', 'formatted_phone_number,website,photos')
+  url.searchParams.set('fields', 'formatted_phone_number,website,photos,reviews')
   url.searchParams.set('key', GOOGLE_API_KEY)
   const res = await fetch(url.toString())
   const data = await res.json()
   return data.result ?? {}
+}
+
+async function generateDescription(name, category, address, reviews) {
+  try {
+    const reviewTexts = (reviews ?? [])
+      .slice(0, 5)
+      .map(r => r.text)
+      .filter(t => t && t.length > 20)
+      .join('\n---\n')
+
+    const prompt = reviewTexts
+      ? `Skriv en kort beskrivning (2-3 meningar) på svenska om detta ställe baserat på besökarnas omdömen nedan. Fokusera på vad som gör stället speciellt — atmosfär, vad besökare uppskattar, vad som sticker ut. Inga tomma ord som "fantastiskt" eller "perfekt". Skriv i tredje person.
+
+Namn: ${name}
+Kategori: ${category}
+Adress: ${address}
+
+Omdömen:
+${reviewTexts}
+
+Svara endast med beskrivningen, inget annat.`
+      : `Skriv en kort beskrivning (2 meningar) på svenska om detta ställe. Basera dig på namn, kategori och plats. Skriv i tredje person, neutralt och informativt.
+
+Namn: ${name}
+Kategori: ${category}
+Adress: ${address}
+
+Svara endast med beskrivningen, inget annat.`
+
+    const msg = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 150,
+      messages: [{ role: 'user', content: prompt }]
+    })
+    return msg.content[0].text.trim()
+  } catch {
+    return null
+  }
 }
 
 function photoUrl(ref) {
@@ -125,6 +163,7 @@ async function fetchForCity(cityId) {
       const bayes = bayesianRating(rating, userRatingsTotal)
       const dogBonus = await getDogBonus(place.name, category, place.formatted_address)
       const score = bayes + dogBonus
+      const description = await generateDescription(place.name, category, place.formatted_address, details.reviews)
 
       console.log(`  → ${place.name}: rating=${rating}(${userRatingsTotal}) bayes=${bayes.toFixed(2)} dog=${dogBonus} score=${score.toFixed(2)}`)
 
@@ -142,6 +181,7 @@ async function fetchForCity(cityId) {
         google_place_id: place.place_id,
         phone: details.formatted_phone_number ?? null,
         website: details.website ?? null,
+        description: description ?? null,
         photo_url: photoRef ? photoUrl(photoRef) : null,
         updated_at: new Date().toISOString(),
       }
