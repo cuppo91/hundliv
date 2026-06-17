@@ -44,13 +44,13 @@ export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }
               ))}
             </nav>
 
+            {/* Tipsa-knapp endast på desktop */}
             <button
               onClick={onSubmitClick}
-              className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
+              className="hidden md:flex flex-shrink-0 items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
               style={{ background: '#FFE600', color: '#1a1a1a' }}
             >
-              <span className="hidden sm:inline">🐾 Tipsa om ett ställe</span>
-              <span className="sm:hidden">🐾 Tipsa</span>
+              🐾 Tipsa om ett ställe
             </button>
 
             {/* Hamburger */}
@@ -80,6 +80,14 @@ export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }
                 {n.label}
               </a>
             ))}
+            <button
+              onClick={() => { setMenuOpen(false); onSubmitClick?.() }}
+              className="flex items-center gap-3 px-6 py-4 w-full text-left font-semibold border-b border-white/10 hover:bg-white/10 transition-colors"
+              style={{ color: '#FFE600' }}
+            >
+              <span>🐾</span>
+              Tipsa om ett ställe
+            </button>
           </div>
         )}
       </header>
