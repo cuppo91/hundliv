@@ -43,8 +43,10 @@ export default function PlaceCard({ place, onClick }: { place: Place; onClick?: 
       <div className="relative h-44 overflow-hidden">
         {place.photo_url ? (
           <img
-            src={place.photo_url}
+            src={place.photo_url.replace('maxwidth=800', 'maxwidth=400')}
             alt={place.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         ) : (
