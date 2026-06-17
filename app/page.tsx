@@ -10,6 +10,7 @@ import { supabase, Place } from "@/lib/supabase";
 import { getCityConfig } from "@/config/cities";
 import SubmitPlaceModal from "@/components/SubmitPlaceModal";
 import PlaceModal from "@/components/PlaceModal";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const city = getCityConfig();
@@ -94,12 +95,7 @@ export default function Home() {
         <AdBanner slot="bottom" />
       </main>
 
-      <footer className="border-t border-stone-200 bg-white py-8 mt-8">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-stone-400">
-          <span className="font-semibold text-stone-600">🐾 Hundliv {city.name}</span>
-          <span>© {new Date().getFullYear()} Hundliv {city.name}</span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { getCityConfig } from '@/config/cities'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export async function generateMetadata() {
   const city = getCityConfig()
@@ -74,11 +75,7 @@ export default function GuidePage() {
         </div>
       </main>
 
-      <footer className="border-t border-stone-200 bg-white py-8 mt-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-stone-400">
-          © {new Date().getFullYear()} Hundliv {city.name}
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
