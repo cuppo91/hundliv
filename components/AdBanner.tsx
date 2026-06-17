@@ -1,7 +1,11 @@
+import { getCityConfig } from '@/config/cities'
+
 export default function AdBanner({ slot }: { slot: 'top' | 'bottom' }) {
+  const city = getCityConfig()
+
   return (
     <a
-      href="mailto:annons@hundlivmalmo.se"
+      href={`mailto:annons@hundliv${city.id}.se`}
       className="w-full bg-stone-50 border border-dashed border-stone-300 rounded-xl flex items-center justify-center gap-3 hover:bg-stone-100 transition-colors"
       style={{ minHeight: slot === 'top' ? 90 : 60 }}
     >
