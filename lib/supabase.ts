@@ -18,6 +18,9 @@ export type Place = {
   website: string | null
   google_place_id: string | null
   rating: number | null
+  user_ratings_total: number | null
+  dog_bonus: number | null
+  score: number | null
   photo_url: string | null
   status: 'pending' | 'approved' | 'rejected'
   sponsored: boolean

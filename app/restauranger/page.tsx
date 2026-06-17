@@ -25,7 +25,7 @@ async function getPlaces(): Promise<Place[]> {
     .eq('city_id', city.id)
     .in('category', ['restaurant', 'cafe'])
     .eq('status', 'approved')
-    .order('rating', { ascending: false })
+    .order('score', { ascending: false })
   return data ?? []
 }
 

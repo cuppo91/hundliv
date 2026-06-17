@@ -25,7 +25,7 @@ async function getParks(): Promise<Place[]> {
     .eq('city_id', city.id)
     .eq('category', 'park')
     .eq('status', 'approved')
-    .order('rating', { ascending: false })
+    .order('score', { ascending: false })
   return data ?? []
 }
 
