@@ -8,8 +8,9 @@ import type { Place } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const article = getArticleBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const article = getArticleBySlug(slug)
   if (!article) return {}
   return {
     title: article.metaTitle,
@@ -29,8 +30,9 @@ function starRating(rating: number | null) {
   return '★'.repeat(full) + '☆'.repeat(5 - full)
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = getArticleBySlug(params.slug)
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const article = getArticleBySlug(slug)
   const city = getCityConfig()
 
   if (!article) notFound()
