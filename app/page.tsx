@@ -22,16 +22,27 @@ export default function Home() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      let query = supabase
-        .from('places')
-        .select('*')
-        .eq('city_id', city.id)
-        .eq('status', 'approved')
-        .order('rating', { ascending: false });
-      if (category !== 'all') query = query.eq('category', category);
-      const { data } = await query;
-      setPlaces(data ?? []);
-      setLoading(false);
+      try {
+        const filters: Record<string, string> = {
+          city_id: city.id,
+          status: 'approved',
+          ...(category !== 'all' ? { category } : {}),
+        };
+
+        let query = supabase.from('places').select('*').order('rating', { ascending: false });
+        for (const [key, value] of Object.entries(filters)) {
+          query = query.eq(key, value);
+        }
+
+        const { data, error } = await query;
+        if (error) console.error('Supabase error:', error);
+        setPlaces(data ?? []);
+      } catch (e) {
+        console.error('Fetch error:', e);
+        setPlaces([]);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [category, city.id]);
