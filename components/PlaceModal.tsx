@@ -69,7 +69,9 @@ export default function PlaceModal({ place, onClose }: { place: Place; onClose: 
             <h2 className="text-xl font-bold text-stone-900 mt-2">{place.name}</h2>
             <p className="text-sm text-stone-500 mt-1">{place.address}</p>
             {place.phone && (
-              <p className="text-sm text-stone-500 mt-1">📞 {place.phone}</p>
+              <a href={`tel:${place.phone.replace(/\s/g, '')}`} className="inline-flex items-center gap-1.5 text-sm text-stone-500 mt-1 hover:text-[#29C4D8] transition-colors">
+                📞 {place.phone}
+              </a>
             )}
           </div>
 
