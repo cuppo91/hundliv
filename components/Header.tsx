@@ -3,24 +3,24 @@
 import Image from "next/image";
 import { getCityConfig } from "@/config/cities";
 
-const LOGO: Record<string, string> = {
-  malmo:     '/logo-malmo.svg',
-  goteborg:  '/logo-goteborg.svg',
-  stockholm: '/logo-goteborg.svg',
+const LOGO: Record<string, { src: string; width: number; height: number }> = {
+  malmo:     { src: '/logo-malmo.svg',    width: 340, height: 53 },
+  goteborg:  { src: '/logo-goteborg.svg', width: 340, height: 46 },
+  stockholm: { src: '/logo-goteborg.svg', width: 340, height: 46 },
 };
 
 export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }) {
   const city = getCityConfig();
-  const logo = LOGO[city.id] ?? '/logo-goteborg.svg';
+  const logo = LOGO[city.id] ?? LOGO.goteborg;
 
   return (
     <header className="sticky top-0 z-50 shadow-sm" style={{ background: '#29C4D8' }}>
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         <Image
-          src={logo}
+          src={logo.src}
           alt={`Hundliv ${city.name}`}
-          height={50}
-          width={360}
+          height={logo.height}
+          width={logo.width}
           priority
           style={{ objectFit: 'contain', objectPosition: 'left' }}
         />
