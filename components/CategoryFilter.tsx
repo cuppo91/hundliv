@@ -23,9 +23,10 @@ export default function CategoryFilter({ active, onChange }: Props) {
           onClick={() => onChange(cat.id)}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all
             ${active === cat.id
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
-              : 'bg-white text-stone-600 border border-stone-200 hover:border-emerald-400 hover:text-emerald-700'
+              ? 'text-white shadow-md'
+              : 'bg-white text-stone-600 border border-stone-200 hover:border-[#29C4D8] hover:text-[#29C4D8]'
             }`}
+          style={active === cat.id ? { background: '#29C4D8' } : {}}
         >
           <span className="text-base">{cat.emoji}</span>
           {cat.label}
