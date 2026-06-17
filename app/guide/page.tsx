@@ -78,8 +78,12 @@ export default function GuidePage() {
                   className="block bg-white rounded-xl border border-stone-100 p-5 shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>{article.category}</span>
-                    {article.season === 'summer' && <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100">☀️</span>}
+                    {article.season !== 'summer' && (
+                      <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>{article.category}</span>
+                    )}
+                    {article.season === 'summer' && (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>☀️ Sommar</span>
+                    )}
                   </div>
                   <h3 className="font-bold text-stone-900 text-base leading-snug mb-2">{article.title}</h3>
                   <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{article.intro}</p>
