@@ -1,4 +1,5 @@
 import { getCityConfig } from '@/config/cities'
+import { getArticlesForCity } from '@/lib/articles'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -12,6 +13,7 @@ export async function generateMetadata() {
 
 export default function GuidePage() {
   const city = getCityConfig()
+  const articles = getArticlesForCity(city.id)
 
   const tips = [
     {
@@ -63,16 +65,40 @@ export default function GuidePage() {
         </div>
       </div>
 
-      <main className="max-w-3xl mx-auto w-full px-4 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {tips.map(tip => (
-            <article key={tip.title} className="bg-white rounded-2xl border border-stone-100 p-5 shadow-sm">
-              <div className="text-3xl mb-3">{tip.emoji}</div>
-              <h2 className="font-bold text-stone-900 text-lg mb-2">{tip.title}</h2>
-              <p className="text-stone-500 text-sm leading-relaxed">{tip.body}</p>
-            </article>
-          ))}
-        </div>
+      <main className="max-w-3xl mx-auto w-full px-4 py-10 space-y-10">
+
+        {articles.length > 0 && (
+          <section>
+            <h2 className="text-xl font-bold text-stone-900 mb-4">Guider & topplistor</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {articles.map(article => (
+                <a
+                  key={article.slug}
+                  href={`/guide/${article.slug}`}
+                  className="block bg-white rounded-xl border border-stone-100 p-5 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="text-xs font-semibold mb-2" style={{ color: '#29C4D8' }}>{article.category}</div>
+                  <h3 className="font-bold text-stone-900 text-base leading-snug mb-2">{article.title}</h3>
+                  <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{article.intro}</p>
+                  <span className="inline-block mt-3 text-xs font-semibold" style={{ color: '#29C4D8' }}>Läs mer →</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section>
+          <h2 className="text-xl font-bold text-stone-900 mb-4">Tips för hundägare</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {tips.map(tip => (
+              <article key={tip.title} className="bg-white rounded-2xl border border-stone-100 p-5 shadow-sm">
+                <div className="text-3xl mb-3">{tip.emoji}</div>
+                <h2 className="font-bold text-stone-900 text-lg mb-2">{tip.title}</h2>
+                <p className="text-stone-500 text-sm leading-relaxed">{tip.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
       </main>
 
       <Footer />
