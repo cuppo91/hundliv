@@ -7,6 +7,8 @@ const geist = Geist({ subsets: ["latin"] });
 
 const city = getCityConfig();
 
+const baseUrl = `https://${city.domain}`
+
 export const metadata: Metadata = {
   title: `Hundliv ${city.name} — Hundvänliga ställen`,
   description: `Hitta hundvänliga restauranger, caféer, parker och aktiviteter i ${city.name}.`,
@@ -16,6 +18,26 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
+  },
+  openGraph: {
+    title: `Hundliv ${city.name} — Hundvänliga ställen`,
+    description: `Hitta hundvänliga restauranger, caféer, parker och aktiviteter i ${city.name}.`,
+    url: baseUrl,
+    siteName: `Hundliv ${city.name}`,
+    images: [{
+      url: `${baseUrl}/og-${city.id}.jpg`,
+      width: 1200,
+      height: 630,
+      alt: `Hundliv ${city.name}`,
+    }],
+    locale: 'sv_SE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Hundliv ${city.name} — Hundvänliga ställen`,
+    description: `Hitta hundvänliga restauranger, caféer, parker och aktiviteter i ${city.name}.`,
+    images: [`${baseUrl}/og-${city.id}.jpg`],
   },
 };
 
