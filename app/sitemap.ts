@@ -1,11 +1,11 @@
 import { MetadataRoute } from 'next'
 import { getCityConfig } from '@/config/cities'
-import { getArticlesForCity } from '@/lib/articles'
+import { getActiveArticlesForCity } from '@/lib/articles'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const city = getCityConfig()
   const baseUrl = `https://${city.domain}`
-  const articles = getArticlesForCity(city.id)
+  const articles = getActiveArticlesForCity(city.id)
 
   const staticPages: MetadataRoute.Sitemap = [
     {

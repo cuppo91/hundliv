@@ -1,5 +1,5 @@
 import { getCityConfig } from '@/config/cities'
-import { getArticlesForCity } from '@/lib/articles'
+import { getActiveArticlesForCity } from '@/lib/articles'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
@@ -13,7 +13,7 @@ export async function generateMetadata() {
 
 export default function GuidePage() {
   const city = getCityConfig()
-  const articles = getArticlesForCity(city.id)
+  const articles = getActiveArticlesForCity(city.id)
 
   const tips = [
     {
@@ -77,7 +77,10 @@ export default function GuidePage() {
                   href={`/guide/${article.slug}`}
                   className="block bg-white rounded-xl border border-stone-100 p-5 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="text-xs font-semibold mb-2" style={{ color: '#29C4D8' }}>{article.category}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>{article.category}</span>
+                    {article.season === 'summer' && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold">☀️ Sommar</span>}
+                  </div>
                   <h3 className="font-bold text-stone-900 text-base leading-snug mb-2">{article.title}</h3>
                   <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{article.intro}</p>
                   <span className="inline-block mt-3 text-xs font-semibold" style={{ color: '#29C4D8' }}>Läs mer →</span>

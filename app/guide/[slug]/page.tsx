@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { getCityConfig } from '@/config/cities'
-import { getArticleBySlug, getArticlesForCity } from '@/lib/articles'
+import { getArticleBySlug, getActiveArticlesForCity } from '@/lib/articles'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { notFound } from 'next/navigation'
@@ -55,7 +55,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     .limit(5)
 
   const topPlaces: Place[] = places ?? []
-  const relatedArticles = getArticlesForCity(city.id).filter(a => a.slug !== article.slug)
+  const relatedArticles = getActiveArticlesForCity(city.id).filter(a => a.slug !== article.slug)
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f9f7f4]">
