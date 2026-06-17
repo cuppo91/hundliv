@@ -8,12 +8,14 @@ import PlaceCard from "@/components/PlaceCard";
 import AdBanner from "@/components/AdBanner";
 import { supabase, Place } from "@/lib/supabase";
 import { getCityConfig } from "@/config/cities";
+import SubmitPlaceModal from "@/components/SubmitPlaceModal";
 
 export default function Home() {
   const city = getCityConfig();
   const [places, setPlaces] = useState<Place[]>([]);
   const [category, setCategory] = useState<Category>('all');
   const [loading, setLoading] = useState(true);
+  const [showSubmit, setShowSubmit] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -22,6 +24,7 @@ export default function Home() {
         .from('places')
         .select('*')
         .eq('city_id', city.id)
+        .eq('status', 'approved')
         .order('rating', { ascending: false });
       if (category !== 'all') query = query.eq('category', category);
       const { data } = await query;
@@ -34,7 +37,8 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-[#f9f7f4]">
       <Header />
-      <Hero />
+      <Hero onSubmitClick={() => setShowSubmit(true)} />
+      {showSubmit && <SubmitPlaceModal onClose={() => setShowSubmit(false)} />}
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 space-y-6">
         <AdBanner slot="top" />
