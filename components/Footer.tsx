@@ -70,13 +70,13 @@ export default function Footer() {
               Vill du nå hundägare i {city.name}? Vi erbjuder annonsplatser och sponsrade listningar.
             </p>
             <a
-              href="mailto:annons@hundliv.se"
+              href={`mailto:annons@hundliv${city.id}.se`}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ background: '#FFE600', color: '#1a1a1a' }}
             >
               📩 Kontakta oss
             </a>
-            <p className="text-xs mt-3 text-stone-500">annons@hundliv.se</p>
+            <p className="text-xs mt-3 text-stone-500">annons@hundliv{city.id}.se</p>
           </div>
         </div>
 
