@@ -5,9 +5,9 @@ import { useState } from "react";
 import { getCityConfig } from "@/config/cities";
 
 const LOGO: Record<string, { src: string; width: number; height: number }> = {
-  malmo:     { src: '/logo-malmo.svg',    width: 340, height: 53 },
-  goteborg:  { src: '/logo-goteborg.svg', width: 340, height: 46 },
-  stockholm: { src: '/logo-goteborg.svg', width: 340, height: 46 },
+  malmo:     { src: '/logo-malmo.svg',    width: 260, height: 41 },
+  goteborg:  { src: '/logo-goteborg.svg', width: 260, height: 35 },
+  stockholm: { src: '/logo-goteborg.svg', width: 260, height: 35 },
 };
 
 const NAV = [
