@@ -110,7 +110,7 @@ async function generateDescription(name, category, address, reviews) {
       .join('\n---\n')
 
     const prompt = reviewTexts
-      ? `Skriv en kort beskrivning (2-3 meningar) på svenska om detta ställe baserat på besökarnas omdömen nedan. Fokusera på vad som gör stället speciellt — atmosfär, vad besökare uppskattar, vad som sticker ut. Inga tomma ord som "fantastiskt" eller "perfekt". Skriv i tredje person.
+      ? `Skriv exakt 2-3 meningar på svenska om detta ställe. Plocka ut det mest specifika och unika från omdömena — vad sticker ut just här jämfört med andra liknande ställen? Undvik generiska fraser som "fantastiskt", "perfekt" eller "rekommenderas varmt". Använd svenska ord, inte engelska låneord. Skriv i tredje person. Håll dig strikt till max 3 meningar.
 
 Namn: ${name}
 Kategori: ${category}
@@ -119,18 +119,18 @@ Adress: ${address}
 Omdömen:
 ${reviewTexts}
 
-Svara endast med beskrivningen, inget annat.`
-      : `Skriv en kort beskrivning (2 meningar) på svenska om detta ställe. Basera dig på namn, kategori och plats. Skriv i tredje person, neutralt och informativt.
+Svara endast med de 2-3 meningarna, absolut inget annat.`
+      : `Skriv exakt 2 meningar på svenska om detta ställe baserat på namn, kategori och plats. Skriv i tredje person, neutralt och konkret. Inga tomma adjektiv.
 
 Namn: ${name}
 Kategori: ${category}
 Adress: ${address}
 
-Svara endast med beskrivningen, inget annat.`
+Svara endast med de 2 meningarna, absolut inget annat.`
 
     const msg = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 150,
+      max_tokens: 200,
       messages: [{ role: 'user', content: prompt }]
     })
     return msg.content[0].text.trim()

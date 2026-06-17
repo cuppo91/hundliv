@@ -112,7 +112,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <h2 className="font-bold text-stone-900 text-lg leading-snug">{place.name}</h2>
                 <p className="text-stone-400 text-sm mt-0.5">{place.address}</p>
                 {place.description && (
-                  <p className="text-stone-600 text-sm mt-2 leading-relaxed">{place.description}</p>
+                  <p className="text-stone-600 text-sm mt-2 leading-relaxed line-clamp-4">{place.description}</p>
                 )}
                 <div className="flex items-center gap-3 mt-2 flex-wrap">
                   {place.rating && (
