@@ -1,4 +1,5 @@
 import { getCityConfig } from "@/config/cities";
+import cities from "@/config/cities";
 
 export default function Footer() {
   const city = getCityConfig();
@@ -7,10 +8,10 @@ export default function Footer() {
   return (
     <footer className="bg-stone-900 text-stone-400 mt-12">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
 
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🐾</span>
               <span className="font-bold text-white text-lg">Hundliv {city.name}</span>
@@ -40,6 +41,25 @@ export default function Footer() {
               <li><a href="/parker" className="hover:text-white transition-colors">🌳 Parker i {city.name}</a></li>
               <li><a href="/?category=vet" className="hover:text-white transition-colors">🏥 Veterinärer i {city.name}</a></li>
               <li><a href="/?category=shop" className="hover:text-white transition-colors">🛍️ Hundbutiker i {city.name}</a></li>
+            </ul>
+          </div>
+
+          {/* Fler städer */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Fler städer</h3>
+            <ul className="space-y-2 text-sm">
+              {Object.values(cities)
+                .filter(c => c.id !== city.id)
+                .map(c => (
+                  <li key={c.id}>
+                    <a
+                      href={`https://${c.domain}`}
+                      className="hover:text-white transition-colors"
+                    >
+                      🐾 Hundliv {c.name}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
 
