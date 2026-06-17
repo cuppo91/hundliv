@@ -18,13 +18,6 @@ export default function Hero({ onSubmitClick }: { onSubmitClick?: () => void }) 
         <p className="text-emerald-100 mt-4 text-lg max-w-xl mx-auto">
           Restauranger, caféer, parker och mycket mer — för dig och din hund.
         </p>
-        <button
-          onClick={onSubmitClick}
-          className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-opacity hover:opacity-90"
-          style={{ background: '#FFE600', color: '#1a1a1a' }}
-        >
-          🐾 Tipsa om ett ställe
-        </button>
       </div>
     </div>
   );

@@ -1,13 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import { getCityConfig } from "@/config/cities";
 
 const LOGO: Record<string, string> = {
   malmo:     '/logo-malmo.svg',
   goteborg:  '/logo-goteborg.svg',
-  stockholm: '/logo-goteborg.svg', // placeholder tills Stockholm-logga finns
+  stockholm: '/logo-goteborg.svg',
 };
 
-export default function Header() {
+export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }) {
   const city = getCityConfig();
   const logo = LOGO[city.id] ?? '/logo-goteborg.svg';
 
@@ -22,11 +24,14 @@ export default function Header() {
           priority
           style={{ objectFit: 'contain', objectPosition: 'left' }}
         />
-        <nav className="hidden sm:flex items-center gap-5 text-sm font-bold uppercase tracking-wider" style={{ color: 'rgba(0,60,70,0.75)' }}>
-          <a href="#" className="hover:text-white transition-colors">Restauranger</a>
-          <a href="#" className="hover:text-white transition-colors">Parker</a>
-          <a href="#" className="hover:text-white transition-colors">Caféer</a>
-        </nav>
+        <button
+          onClick={onSubmitClick}
+          className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
+          style={{ background: '#FFE600', color: '#1a1a1a' }}
+        >
+          <span className="hidden sm:inline">🐾 Tipsa om ett ställe</span>
+          <span className="sm:hidden">🐾 Tipsa</span>
+        </button>
       </div>
     </header>
   );

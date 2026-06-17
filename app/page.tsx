@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f9f7f4]">
-      <Header />
+      <Header onSubmitClick={() => setShowSubmit(true)} />
       <Hero onSubmitClick={() => setShowSubmit(true)} />
       {showSubmit && <SubmitPlaceModal onClose={() => setShowSubmit(false)} />}
       {selectedPlace && <PlaceModal place={selectedPlace} onClose={() => setSelectedPlace(null)} />}
