@@ -16,14 +16,16 @@ export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }
   return (
     <header className="sticky top-0 z-50 shadow-sm" style={{ background: '#29C4D8' }}>
       <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Image
-          src={logo.src}
-          alt={`Hundliv ${city.name}`}
-          height={logo.height}
-          width={logo.width}
-          priority
-          style={{ objectFit: 'contain', objectPosition: 'left' }}
-        />
+        <a href="/">
+          <Image
+            src={logo.src}
+            alt={`Hundliv ${city.name}`}
+            height={logo.height}
+            width={logo.width}
+            priority
+            style={{ objectFit: 'contain', objectPosition: 'left' }}
+          />
+        </a>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex items-center gap-5 text-sm font-semibold" style={{ color: 'rgba(0,60,70,0.8)' }}>
             <a href="/restauranger" className="hover:text-white transition-colors">Restauranger</a>
