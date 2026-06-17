@@ -3,19 +3,16 @@
 export type Category = 'all' | 'restaurant' | 'cafe' | 'park' | 'activity' | 'shop' | 'vet';
 
 const CATEGORIES: { id: Category; label: string; emoji: string }[] = [
-  { id: 'all',        label: 'Alla',        emoji: '🗺️' },
-  { id: 'restaurant', label: 'Restauranger', emoji: '🍽️' },
-  { id: 'cafe',       label: 'Caféer',       emoji: '☕' },
-  { id: 'park',       label: 'Parker',       emoji: '🌳' },
-  { id: 'activity',   label: 'Aktiviteter',  emoji: '🎾' },
-  { id: 'shop',       label: 'Butiker',      emoji: '🛍️' },
-  { id: 'vet',        label: 'Veterinärer',  emoji: '🏥' },
+  { id: 'all',        label: 'Alla ställen', emoji: '🗺️' },
+  { id: 'restaurant', label: 'Restauranger',  emoji: '🍽️' },
+  { id: 'cafe',       label: 'Caféer',        emoji: '☕' },
+  { id: 'park',       label: 'Parker',        emoji: '🌳' },
+  { id: 'activity',   label: 'Aktiviteter',   emoji: '🎾' },
+  { id: 'shop',       label: 'Butiker',       emoji: '🛍️' },
+  { id: 'vet',        label: 'Veterinärer',   emoji: '🏥' },
 ];
 
-type Props = {
-  active: Category;
-  onChange: (c: Category) => void;
-};
+type Props = { active: Category; onChange: (c: Category) => void };
 
 export default function CategoryFilter({ active, onChange }: Props) {
   return (
@@ -24,13 +21,13 @@ export default function CategoryFilter({ active, onChange }: Props) {
         <button
           key={cat.id}
           onClick={() => onChange(cat.id)}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all
             ${active === cat.id
-              ? 'bg-amber-600 text-white'
-              : 'bg-white text-stone-700 border border-stone-200 hover:border-amber-400'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
+              : 'bg-white text-stone-600 border border-stone-200 hover:border-emerald-400 hover:text-emerald-700'
             }`}
         >
-          <span>{cat.emoji}</span>
+          <span className="text-base">{cat.emoji}</span>
           {cat.label}
         </button>
       ))}

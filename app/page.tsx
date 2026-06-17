@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
+import Hero from "@/components/Hero";
 import CategoryFilter, { Category } from "@/components/CategoryFilter";
 import PlaceCard from "@/components/PlaceCard";
 import AdBanner from "@/components/AdBanner";
@@ -22,11 +23,7 @@ export default function Home() {
         .select('*')
         .eq('city_id', city.id)
         .order('rating', { ascending: false });
-
-      if (category !== 'all') {
-        query = query.eq('category', category);
-      }
-
+      if (category !== 'all') query = query.eq('category', category);
       const { data } = await query;
       setPlaces(data ?? []);
       setLoading(false);
@@ -35,53 +32,53 @@ export default function Home() {
   }, [category, city.id]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#f9f7f4]">
       <Header />
+      <Hero />
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
-        {/* Top ad */}
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 space-y-6">
         <AdBanner slot="top" />
 
-        {/* Hero */}
-        <div>
-          <h1 className="text-3xl font-bold">
-            Hundvänliga ställen i {city.name}
-          </h1>
-          <p className="text-stone-500 mt-1">
-            Hitta restauranger, caféer, parker och mer — för dig och din hund.
-          </p>
+        {/* Filter + count */}
+        <div className="space-y-3">
+          <CategoryFilter active={category} onChange={setCategory} />
+          {!loading && (
+            <p className="text-sm text-stone-400">
+              {places.length} ställen hittade
+              {category !== 'all' ? ` i kategorin "${category}"` : ''} i {city.name}
+            </p>
+          )}
         </div>
 
-        {/* Filter */}
-        <CategoryFilter active={category} onChange={setCategory} />
-
-        {/* Results */}
+        {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl border border-stone-200 h-64 animate-pulse" />
+              <div key={i} className="bg-white rounded-2xl border border-stone-100 h-72 animate-pulse" />
             ))}
           </div>
         ) : places.length === 0 ? (
-          <div className="text-center py-20 text-stone-400">
-            <p className="text-4xl mb-3">🐾</p>
-            <p className="text-lg">Inga ställen hittades ännu.</p>
-            <p className="text-sm mt-1">Data hämtas snart!</p>
+          <div className="text-center py-24">
+            <p className="text-5xl mb-4">🐾</p>
+            <p className="text-lg font-semibold text-stone-700">Inga ställen hittades</p>
+            <p className="text-sm text-stone-400 mt-1">Prova en annan kategori</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {places.map((place) => (
               <PlaceCard key={place.id} place={place} />
             ))}
           </div>
         )}
 
-        {/* Bottom ad */}
         <AdBanner slot="bottom" />
       </main>
 
-      <footer className="border-t border-stone-200 py-6 text-center text-sm text-stone-400">
-        © {new Date().getFullYear()} Hundliv {city.name}
+      <footer className="border-t border-stone-200 bg-white py-8 mt-8">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-stone-400">
+          <span className="font-semibold text-stone-600">🐾 Hundliv {city.name}</span>
+          <span>© {new Date().getFullYear()} Hundliv {city.name}</span>
+        </div>
       </footer>
     </div>
   );
