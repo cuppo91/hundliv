@@ -10,7 +10,10 @@ export const revalidate = 3600 // revalidate every hour
 
 export async function generateStaticParams() {
   const { default: articles } = await import('@/lib/articles')
-  return articles.map(a => ({ slug: a.slug }))
+  const city = getCityConfig()
+  return articles
+    .filter(a => a.cityId === city.id)
+    .map(a => ({ slug: a.slug }))
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
