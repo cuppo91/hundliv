@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: `Hundliv ${city.name} — Hundvänliga ställen`,
   description: `Hitta hundvänliga restauranger, caféer, parker och aktiviteter i ${city.name}.`,
   verification: {
-    google: 'Uoi4kK8wxBg7hAmKaQrWJ2M3bjU8a17Ion39Cz651wA',
+    google: ['Uoi4kK8wxBg7hAmKaQrWJ2M3bjU8a17Ion39Cz651wA', '5dSUYjFr96mjxgvbiCaXFoqSH4_2Q1bmrCoHq465lC0'],
   },
   icons: {
     icon: '/favicon.png',
