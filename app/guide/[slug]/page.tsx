@@ -81,55 +81,73 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         {/* Live-rankade ställen från databasen */}
         <div className="space-y-5 mb-10">
           {topPlaces.map((place, i) => (
-            <div key={place.id} className="bg-white rounded-2xl border border-stone-100 p-5 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div
-                  className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-extrabold text-lg"
-                  style={{ background: '#29C4D8' }}
-                >
-                  {i + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-bold text-stone-900 text-lg leading-snug">{place.name}</h2>
-                  <p className="text-stone-400 text-sm mt-0.5">{place.address}</p>
-                  <div className="flex items-center gap-3 mt-2 flex-wrap">
-                    {place.rating && (
-                      <span className="text-amber-500 text-sm font-medium">
-                        {starRating(place.rating)} {place.rating.toFixed(1)}
-                      </span>
-                    )}
-                    {place.user_ratings_total && (
-                      <span className="text-stone-400 text-xs">
-                        {place.user_ratings_total.toLocaleString('sv-SE')} omdömen
-                      </span>
-                    )}
-                    {place.dog_bonus && place.dog_bonus >= 1.5 && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>
-                        🐾 Hundspecialiserat
-                      </span>
-                    )}
+            <div key={place.id} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+              {place.photo_url && (
+                <div className="relative w-full h-48 bg-stone-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={place.photo_url}
+                    alt={place.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div
+                    className="absolute top-3 left-3 w-9 h-9 rounded-full flex items-center justify-center text-white font-extrabold text-base shadow"
+                    style={{ background: '#29C4D8' }}
+                  >
+                    {i + 1}
                   </div>
-                  <div className="flex gap-3 mt-3">
-                    {place.website && (
-                      <a
-                        href={place.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs font-semibold hover:underline"
-                        style={{ color: '#29C4D8' }}
-                      >
-                        Hemsida →
-                      </a>
-                    )}
+                </div>
+              )}
+              <div className="p-5">
+                {!place.photo_url && (
+                  <div className="flex items-center gap-3 mb-3">
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-extrabold text-lg"
+                      style={{ background: '#29C4D8' }}
+                    >
+                      {i + 1}
+                    </div>
+                  </div>
+                )}
+                <h2 className="font-bold text-stone-900 text-lg leading-snug">{place.name}</h2>
+                <p className="text-stone-400 text-sm mt-0.5">{place.address}</p>
+                <div className="flex items-center gap-3 mt-2 flex-wrap">
+                  {place.rating && (
+                    <span className="text-amber-500 text-sm font-medium">
+                      {starRating(place.rating)} {place.rating.toFixed(1)}
+                    </span>
+                  )}
+                  {place.user_ratings_total && (
+                    <span className="text-stone-400 text-xs">
+                      {place.user_ratings_total.toLocaleString('sv-SE')} omdömen
+                    </span>
+                  )}
+                  {place.dog_bonus && place.dog_bonus >= 1.5 && (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>
+                      🐾 Hundspecialiserat
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-3 mt-3">
+                  {place.website && (
                     <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(place.address)}`}
+                      href={place.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-stone-400 hover:underline"
+                      className="text-xs font-semibold hover:underline"
+                      style={{ color: '#29C4D8' }}
                     >
-                      Vägbeskrivning →
+                      Hemsida →
                     </a>
-                  </div>
+                  )}
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(place.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-stone-400 hover:underline"
+                  >
+                    Vägbeskrivning →
+                  </a>
                 </div>
               </div>
             </div>

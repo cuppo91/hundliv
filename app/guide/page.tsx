@@ -1,7 +1,10 @@
+import { createClient } from '@supabase/supabase-js'
 import { getCityConfig } from '@/config/cities'
 import { getActiveArticlesForCity } from '@/lib/articles'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata() {
   const city = getCityConfig()
@@ -11,9 +14,32 @@ export async function generateMetadata() {
   }
 }
 
-export default function GuidePage() {
+export default async function GuidePage() {
   const city = getCityConfig()
   const articles = getActiveArticlesForCity(city.id)
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  // Fetch top photo for each article (first result by score for the article's categories)
+  const photoMap: Record<string, string> = {}
+  await Promise.all(
+    articles.map(async (article) => {
+      const { data } = await supabase
+        .from('places')
+        .select('photo_url')
+        .eq('city_id', city.id)
+        .in('category', article.placeCategories)
+        .eq('status', 'approved')
+        .not('photo_url', 'is', null)
+        .order('score', { ascending: false })
+        .limit(1)
+        .single()
+      if (data?.photo_url) photoMap[article.slug] = data.photo_url
+    })
+  )
 
   const tips = [
     {
@@ -75,19 +101,29 @@ export default function GuidePage() {
                 <a
                   key={article.slug}
                   href={`/guide/${article.slug}`}
-                  className="block bg-white rounded-xl border border-stone-100 p-5 shadow-sm hover:shadow-md transition-shadow"
+                  className="block bg-white rounded-xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    {article.season !== 'summer' && (
-                      <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>{article.category}</span>
-                    )}
-                    {article.season === 'summer' && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>☀️ Sommar</span>
-                    )}
+                  {photoMap[article.slug] && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={photoMap[article.slug]}
+                      alt={article.title}
+                      className="w-full h-36 object-cover"
+                    />
+                  )}
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      {article.season !== 'summer' && (
+                        <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>{article.category}</span>
+                      )}
+                      {article.season === 'summer' && (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>☀️ Sommar</span>
+                      )}
+                    </div>
+                    <h3 className="font-bold text-stone-900 text-base leading-snug mb-2">{article.title}</h3>
+                    <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{article.intro}</p>
+                    <span className="inline-block mt-3 text-xs font-semibold" style={{ color: '#29C4D8' }}>Läs mer →</span>
                   </div>
-                  <h3 className="font-bold text-stone-900 text-base leading-snug mb-2">{article.title}</h3>
-                  <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{article.intro}</p>
-                  <span className="inline-block mt-3 text-xs font-semibold" style={{ color: '#29C4D8' }}>Läs mer →</span>
                 </a>
               ))}
             </div>
