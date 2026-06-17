@@ -11,24 +11,41 @@ const supabase = createClient(
 
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? 'hundliv2024';
 
+type Report = {
+  id: string
+  place_id: string
+  reason: string
+  created_at: string
+  places: { name: string; city_id: string; address: string }
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState('');
+  const [tab, setTab] = useState<'pending' | 'reports'>('pending');
   const [places, setPlaces] = useState<Place[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function load() {
+  async function loadPending() {
     setLoading(true);
-    const { data } = await supabase
-      .from('places')
-      .select('*')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false });
+    const { data } = await supabase.from('places').select('*').eq('status', 'pending').order('created_at', { ascending: false });
     setPlaces(data ?? []);
     setLoading(false);
   }
 
-  useEffect(() => { if (authed) load(); }, [authed]);
+  async function loadReports() {
+    setLoading(true);
+    const { data } = await supabase.from('reports').select('*, places(name, city_id, address)').order('created_at', { ascending: false }).limit(50);
+    setReports(data ?? []);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    if (!authed) return;
+    if (tab === 'pending') loadPending();
+    else loadReports();
+  }, [authed, tab]);
 
   async function updateStatus(id: string, status: 'approved' | 'rejected') {
     await supabase.from('places').update({ status }).eq('id', id);
@@ -53,52 +70,77 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-stone-50">
       <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
-        <h1 className="text-lg font-bold">Admin — Väntande tips</h1>
-        <span className="text-sm text-stone-400">{places.length} att granska</span>
+        <h1 className="text-lg font-bold">Admin — Hundliv</h1>
+        <div className="flex gap-2">
+          <button onClick={() => setTab('pending')}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${tab === 'pending' ? 'text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
+            style={tab === 'pending' ? { background: '#29C4D8' } : {}}>
+            Tips ({places.length})
+          </button>
+          <button onClick={() => setTab('reports')}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${tab === 'reports' ? 'text-white' : 'bg-stone-100 text-stone-600 hover:bg-stone-200'}`}
+            style={tab === 'reports' ? { background: '#29C4D8' } : {}}>
+            Rapporter ({reports.length})
+          </button>
+        </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {loading ? (
           <p className="text-stone-400 text-center py-20">Laddar...</p>
-        ) : places.length === 0 ? (
-          <div className="text-center py-20 text-stone-400">
-            <p className="text-4xl mb-3">✅</p>
-            <p>Inga tips att granska!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {places.map(place => (
-              <div key={place.id} className="bg-white rounded-xl border border-stone-200 p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h2 className="font-bold text-stone-900">{place.name}</h2>
-                      <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">{place.category}</span>
-                      <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">{place.city_id}</span>
+        ) : tab === 'pending' ? (
+          places.length === 0 ? (
+            <div className="text-center py-20 text-stone-400"><p className="text-4xl mb-3">✅</p><p>Inga tips att granska!</p></div>
+          ) : (
+            <div className="space-y-4">
+              {places.map(place => (
+                <div key={place.id} className="bg-white rounded-xl border border-stone-200 p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="font-bold text-stone-900">{place.name}</h2>
+                        <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">{place.category}</span>
+                        <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">{place.city_id}</span>
+                      </div>
+                      <p className="text-sm text-stone-500 mt-1">{place.address}</p>
+                      {place.submission_note && <p className="text-sm text-stone-600 mt-2 bg-stone-50 rounded-lg p-2 italic">"{place.submission_note}"</p>}
+                      <div className="flex gap-3 mt-1 text-xs text-stone-400 flex-wrap">
+                        {place.submitted_by && <span>Tipsat av: {place.submitted_by}</span>}
+                        {place.website && <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-cyan-600 hover:underline">{place.website}</a>}
+                      </div>
                     </div>
-                    <p className="text-sm text-stone-500 mt-1">{place.address}</p>
-                    {place.submission_note && (
-                      <p className="text-sm text-stone-600 mt-2 bg-stone-50 rounded-lg p-2 italic">"{place.submission_note}"</p>
-                    )}
-                    <div className="flex gap-3 mt-1 text-xs text-stone-400 flex-wrap">
-                      {place.submitted_by && <span>Tipsat av: {place.submitted_by}</span>}
-                      {place.website && <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-cyan-600 hover:underline">{place.website}</a>}
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button onClick={() => updateStatus(place.id, 'approved')} className="px-4 py-2 rounded-full text-white text-sm font-semibold bg-emerald-500 hover:bg-emerald-600">Godkänn</button>
+                      <button onClick={() => updateStatus(place.id, 'rejected')} className="px-4 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200">Avvisa</button>
                     </div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
-                    <button onClick={() => updateStatus(place.id, 'approved')}
-                      className="px-4 py-2 rounded-full text-white text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 transition-colors">
-                      Godkänn
-                    </button>
-                    <button onClick={() => updateStatus(place.id, 'rejected')}
-                      className="px-4 py-2 rounded-full text-sm font-semibold bg-stone-100 text-stone-600 hover:bg-stone-200 transition-colors">
-                      Avvisa
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          reports.length === 0 ? (
+            <div className="text-center py-20 text-stone-400"><p className="text-4xl mb-3">✅</p><p>Inga rapporter!</p></div>
+          ) : (
+            <div className="space-y-3">
+              {reports.map(report => (
+                <div key={report.id} className="bg-white rounded-xl border border-stone-200 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="font-semibold text-stone-900">{report.places?.name ?? report.place_id}</p>
+                      <p className="text-xs text-stone-400">{report.places?.city_id} — {report.places?.address}</p>
+                      <p className="text-sm text-red-600 mt-1">"{report.reason}"</p>
+                      <p className="text-xs text-stone-300 mt-1">{new Date(report.created_at).toLocaleString('sv-SE')}</p>
+                    </div>
+                    <button onClick={() => updateStatus(report.place_id, 'rejected')}
+                      className="px-3 py-1.5 rounded-full text-sm font-semibold bg-red-50 text-red-600 hover:bg-red-100 flex-shrink-0">
+                      Dölj ställe
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )
         )}
       </main>
     </div>

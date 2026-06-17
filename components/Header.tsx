@@ -24,14 +24,21 @@ export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }
           priority
           style={{ objectFit: 'contain', objectPosition: 'left' }}
         />
-        <button
-          onClick={onSubmitClick}
-          className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
-          style={{ background: '#FFE600', color: '#1a1a1a' }}
-        >
-          <span className="hidden sm:inline">🐾 Tipsa om ett ställe</span>
-          <span className="sm:hidden">🐾 Tipsa</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-5 text-sm font-semibold" style={{ color: 'rgba(0,60,70,0.8)' }}>
+            <a href="/restauranger" className="hover:text-white transition-colors">Restauranger</a>
+            <a href="/parker" className="hover:text-white transition-colors">Parker</a>
+            <a href="/guide" className="hover:text-white transition-colors">Guide</a>
+          </nav>
+          <button
+            onClick={onSubmitClick}
+            className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
+            style={{ background: '#FFE600', color: '#1a1a1a' }}
+          >
+            <span className="hidden sm:inline">🐾 Tipsa om ett ställe</span>
+            <span className="sm:hidden">🐾 Tipsa</span>
+          </button>
+        </div>
       </div>
     </header>
   );

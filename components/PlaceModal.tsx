@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Place } from "@/lib/supabase";
+import ReportModal from "./ReportModal";
 
 const CATEGORY_LABEL: Record<string, string> = {
   restaurant: 'Restaurang', cafe: 'Café', park: 'Park',
@@ -24,6 +26,7 @@ const FALLBACK_EMOJI: Record<string, string> = {
 };
 
 export default function PlaceModal({ place, onClose }: { place: Place; onClose: () => void }) {
+  const [showReport, setShowReport] = useState(false);
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(place.address)}`
 
   return (
@@ -107,8 +110,14 @@ export default function PlaceModal({ place, onClose }: { place: Place; onClose: 
               </a>
             )}
           </div>
+          {/* Report link */}
+          <button onClick={() => setShowReport(true)}
+            className="w-full text-center text-xs text-stone-300 hover:text-stone-400 transition-colors pt-1">
+            Rapportera felaktig information
+          </button>
         </div>
       </div>
+      {showReport && <ReportModal placeId={place.id} placeName={place.name} onClose={() => setShowReport(false)} />}
     </div>
   );
 }
