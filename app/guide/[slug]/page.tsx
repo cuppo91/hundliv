@@ -6,15 +6,7 @@ import Footer from '@/components/Footer'
 import { notFound } from 'next/navigation'
 import type { Place } from '@/lib/supabase'
 
-export const revalidate = 3600 // revalidate every hour
-
-export async function generateStaticParams() {
-  const { default: articles } = await import('@/lib/articles')
-  const city = getCityConfig()
-  return articles
-    .filter(a => a.cityId === city.id)
-    .map(a => ({ slug: a.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const article = getArticleBySlug(params.slug)
