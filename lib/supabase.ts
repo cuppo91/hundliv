@@ -19,6 +19,9 @@ export type Place = {
   google_place_id: string | null
   rating: number | null
   photo_url: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  submitted_by: string | null
+  submission_note: string | null
   created_at: string
   updated_at: string
 }
