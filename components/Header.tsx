@@ -13,12 +13,12 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 shadow-sm" style={{ background: '#29C4D8' }}>
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
         <Image
           src={logo}
           alt={`Hundliv ${city.name}`}
-          height={38}
-          width={280}
+          height={50}
+          width={360}
           priority
           style={{ objectFit: 'contain', objectPosition: 'left' }}
         />
