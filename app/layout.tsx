@@ -10,6 +10,9 @@ const city = getCityConfig();
 export const metadata: Metadata = {
   title: `Hundliv ${city.name} — Hundvänliga ställen`,
   description: `Hitta hundvänliga restauranger, caféer, parker och aktiviteter i ${city.name}.`,
+  verification: {
+    google: 'Uoi4kK8wxBg7hAmKaQrWJ2M3bjU8a17Ion39Cz651wA',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
