@@ -85,7 +85,8 @@ export default function Footer() {
           <p>© {year} Hundliv {city.name}. Alla rättigheter förbehållna.</p>
           <div className="flex gap-4">
             <a href="/guide" className="hover:text-stone-400 transition-colors">Om oss</a>
-            <a href="mailto:annons@hundliv.se" className="hover:text-stone-400 transition-colors">Annonsera</a>
+            <a href="/integritetspolicy" className="hover:text-stone-400 transition-colors">Integritetspolicy</a>
+            <a href={`mailto:annons@hundliv${city.id}.se`} className="hover:text-stone-400 transition-colors">Annonsera</a>
           </div>
         </div>
       </div>

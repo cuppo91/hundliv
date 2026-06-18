@@ -66,6 +66,8 @@ function BottomSheet({
   setShowEmailForm,
   email,
   setEmail,
+  newsletter,
+  setNewsletter,
   sending,
   sent,
   sendError,
@@ -79,6 +81,8 @@ function BottomSheet({
   setShowEmailForm: (v: boolean) => void
   email: string
   setEmail: (v: string) => void
+  newsletter: boolean
+  setNewsletter: (v: boolean) => void
   sending: boolean
   sent: boolean
   sendError: string
@@ -129,23 +133,19 @@ function BottomSheet({
           {showEmailForm && !sent && (
             <div className="border-t border-stone-100 pt-4">
               <p className="text-sm text-stone-500 mb-3">Skriv in din mailadress så skickar vi listan.</p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="din@email.se"
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#29C4D8]"
-                />
-                <button
-                  onClick={onSend}
-                  disabled={sending || !email}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
-                  style={{ background: '#29C4D8', color: '#fff' }}
-                >
+              <div className="flex gap-2 mb-3">
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.se" className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#29C4D8]" />
+                <button onClick={onSend} disabled={sending || !email} className="px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50" style={{ background: '#29C4D8', color: '#fff' }}>
                   {sending ? '...' : 'Skicka'}
                 </button>
               </div>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-stone-400 leading-relaxed">
+                  Ja, jag vill ha hundvänliga tips via mail. Du kan avprenumerera när som helst.{' '}
+                  <a href="/integritetspolicy" target="_blank" className="underline">Integritetspolicy</a>
+                </span>
+              </label>
               {sendError && <p className="text-red-500 text-sm mt-2">{sendError}</p>}
             </div>
           )}
@@ -178,6 +178,7 @@ export default function PlaneringsKarta({
   const [hotelMarker, setHotelMarker] = useState<{ lat: number; lng: number; label: string } | null>(null)
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [email, setEmail] = useState('')
+  const [newsletter, setNewsletter] = useState(false)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [sendError, setSendError] = useState('')
@@ -202,7 +203,7 @@ export default function PlaneringsKarta({
       const res = await fetch('/api/send-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, places: myList, cityName }),
+        body: JSON.stringify({ email, places: myList, cityName, newsletter }),
       })
       if (!res.ok) throw new Error('Kunde inte skicka mail')
       setSent(true)
@@ -337,12 +338,19 @@ export default function PlaneringsKarta({
             {showEmailForm && !sent && (
               <div className="border-t border-stone-100 pt-4">
                 <p className="text-sm text-stone-500 mb-3">Skriv in din mailadress så skickar vi listan.</p>
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-3">
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.se" className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#29C4D8]" />
                   <button onClick={handleSendEmail} disabled={sending || !email} className="px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50" style={{ background: '#29C4D8', color: '#fff' }}>
                     {sending ? 'Skickar...' : 'Skicka'}
                   </button>
                 </div>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0" />
+                  <span className="text-xs text-stone-400 leading-relaxed">
+                    Ja, jag vill få hundvänliga tips och nyheter från Hundliv {cityName} via mail. Du kan avprenumerera när som helst.{' '}
+                    <a href="/integritetspolicy" target="_blank" className="underline hover:text-stone-600">Integritetspolicy</a>
+                  </span>
+                </label>
                 {sendError && <p className="text-red-500 text-sm mt-2">{sendError}</p>}
               </div>
             )}
@@ -384,6 +392,8 @@ export default function PlaneringsKarta({
           setShowEmailForm={setShowEmailForm}
           email={email}
           setEmail={setEmail}
+          newsletter={newsletter}
+          setNewsletter={setNewsletter}
           sending={sending}
           sent={sent}
           sendError={sendError}

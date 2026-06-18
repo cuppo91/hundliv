@@ -97,6 +97,11 @@ function buildEmailHtml(places: Place[], cityName: string): string {
           Skickat från <a href="https://hundliv${cityName.toLowerCase() === 'malmö' ? 'malmo' : 'goteborg'}.se" style="color: #29C4D8;">Hundliv ${cityName}</a> ·
           Din guide till ett bättre hundliv
         </p>
+        <p style="margin: 8px 0 0; font-size: 11px; color: #ccc;">
+          <a href="https://hundlivmalmo.se/integritetspolicy" style="color: #ccc;">Integritetspolicy</a>
+          · Om du fått detta mail av misstag, ignorera det.
+          · <a href="mailto:noreply@hundlivmalmo.se?subject=unsubscribe" style="color: #ccc;">Avprenumerera</a>
+        </p>
       </td>
     </tr>
   </table>
@@ -105,14 +110,24 @@ function buildEmailHtml(places: Place[], cityName: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  const { email, places, cityName } = await req.json() as {
+  const { email, places, cityName, newsletter } = await req.json() as {
     email: string
     places: Place[]
     cityName: string
+    newsletter: boolean
   }
 
   if (!email || !places?.length) {
     return NextResponse.json({ error: 'Saknar email eller platser' }, { status: 400 })
+  }
+
+  // Add to audience if newsletter consent given
+  if (newsletter && process.env.RESEND_AUDIENCE_ID) {
+    await resend.contacts.create({
+      email,
+      audienceId: process.env.RESEND_AUDIENCE_ID,
+      unsubscribed: false,
+    }).catch(err => console.error('Audience error:', err))
   }
 
   const { error } = await resend.emails.send({
@@ -120,6 +135,9 @@ export async function POST(req: NextRequest) {
     to: email,
     subject: `Din hundvänliga lista för ${cityName} 🐾`,
     html: buildEmailHtml(places, cityName),
+    headers: newsletter ? {
+      'List-Unsubscribe': `<mailto:noreply@hundlivmalmo.se?subject=unsubscribe>`,
+    } : undefined,
   })
 
   if (error) {
