@@ -243,44 +243,145 @@ export default function PlaneringsKarta({
           ))}
         </div>
 
-        {/* Karta */}
-        <div className="rounded-2xl overflow-hidden shadow-md" style={{ height: 480 }}>
-          <Map
-            defaultCenter={{ lat: cityCenter[1], lng: cityCenter[0] }}
-            defaultZoom={12}
-            mapId="6a43dc81cfda481ded1fa497"
-            gestureHandling="greedy"
-            disableDefaultUI={false}
-          >
-            {hotelMarker && (
-              <AdvancedMarker position={{ lat: hotelMarker.lat, lng: hotelMarker.lng }}>
-                <div className="bg-white border-2 border-[#29C4D8] rounded-full px-3 py-1 text-xs font-bold shadow-lg whitespace-nowrap">
-                  🏨 {hotelMarker.label}
+        {/* Desktop: karta + sidopanel / Mobil: karta full-width */}
+        <div className="flex gap-4 items-start">
+
+          {/* Karta */}
+          <div className="flex-1 rounded-2xl overflow-hidden shadow-md" style={{ height: 520 }}>
+            <Map
+              defaultCenter={{ lat: cityCenter[1], lng: cityCenter[0] }}
+              defaultZoom={12}
+              mapId="6a43dc81cfda481ded1fa497"
+              gestureHandling="greedy"
+              disableDefaultUI={false}
+            >
+              {hotelMarker && (
+                <AdvancedMarker position={{ lat: hotelMarker.lat, lng: hotelMarker.lng }}>
+                  <div className="bg-white border-2 border-[#29C4D8] rounded-full px-3 py-1 text-xs font-bold shadow-lg whitespace-nowrap">
+                    🏨 {hotelMarker.label}
+                  </div>
+                </AdvancedMarker>
+              )}
+              {filteredPlaces.map(place => (
+                <AdvancedMarker
+                  key={place.id}
+                  position={{ lat: place.lat, lng: place.lng }}
+                  onClick={() => setSelectedPlace(place)}
+                >
+                  <Pin
+                    background={isInList(place) ? '#FFE600' : PIN_COLORS[place.category] ?? '#29C4D8'}
+                    borderColor={isInList(place) ? '#d4b800' : undefined}
+                    glyphColor="#fff"
+                  />
+                </AdvancedMarker>
+              ))}
+            </Map>
+          </div>
+
+          {/* Desktop sidopanel */}
+          <div className="hidden md:flex flex-col gap-3 w-80 flex-shrink-0" style={{ height: 520, overflowY: 'auto' }}>
+
+            {/* Info-kort eller placeholder */}
+            {selectedPlace ? (
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+                {selectedPlace.photo_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={selectedPlace.photo_url} alt={selectedPlace.name} className="w-full h-36 object-cover" />
+                )}
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>
+                      {CATEGORY_EMOJI[selectedPlace.category]} {CATEGORY_LABELS[selectedPlace.category]}
+                    </span>
+                    <button onClick={() => setSelectedPlace(null)} className="text-stone-300 hover:text-stone-500 text-lg leading-none">✕</button>
+                  </div>
+                  <h3 className="font-bold text-stone-900 text-base leading-snug">{selectedPlace.name}</h3>
+                  <p className="text-stone-400 text-xs mt-0.5">{selectedPlace.address}</p>
+                  {selectedPlace.description && (
+                    <p className="text-stone-600 text-sm mt-2 leading-relaxed line-clamp-3">{selectedPlace.description}</p>
+                  )}
+                  {selectedPlace.rating && (
+                    <p className="text-amber-500 text-sm font-medium mt-2">
+                      ★ {selectedPlace.rating.toFixed(1)}
+                      <span className="text-stone-400 font-normal ml-1 text-xs">({selectedPlace.user_ratings_total?.toLocaleString('sv-SE')})</span>
+                    </p>
+                  )}
+                  <button
+                    onClick={() => toggleList(selectedPlace)}
+                    className="mt-3 w-full py-2 rounded-xl text-sm font-semibold transition-all"
+                    style={isInList(selectedPlace) ? { background: '#FFE600', color: '#1a1a1a' } : { background: '#29C4D8', color: '#fff' }}
+                  >
+                    {isInList(selectedPlace) ? '✓ Tillagd i listan' : '+ Lägg till i listan'}
+                  </button>
                 </div>
-              </AdvancedMarker>
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl border border-dashed border-stone-200 p-6 text-center">
+                <p className="text-3xl mb-2">🗺️</p>
+                <p className="text-stone-500 text-sm">Klicka på ett ställe på kartan för att se mer info och lägga till det i din lista.</p>
+              </div>
             )}
-            {filteredPlaces.map(place => (
-              <AdvancedMarker
-                key={place.id}
-                position={{ lat: place.lat, lng: place.lng }}
-                onClick={() => setSelectedPlace(place)}
-              >
-                <Pin
-                  background={isInList(place) ? '#FFE600' : PIN_COLORS[place.category] ?? '#29C4D8'}
-                  borderColor={isInList(place) ? '#d4b800' : undefined}
-                  glyphColor="#fff"
-                />
-              </AdvancedMarker>
-            ))}
-          </Map>
+
+            {/* Lista */}
+            {myList.length > 0 && (
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 flex-1">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="font-bold text-stone-900 text-sm">Din lista ({myList.length})</h2>
+                  {!showEmailForm && !sent && (
+                    <button onClick={() => setShowEmailForm(true)} className="px-3 py-1.5 rounded-full text-xs font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>
+                      📩 Maila listan
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-2 mb-3">
+                  {myList.map(place => (
+                    <div key={place.id} className="flex items-center gap-2">
+                      {place.photo_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={place.photo_url} alt={place.name} className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-stone-900 text-xs truncate">{place.name}</p>
+                        <p className="text-stone-400 text-xs truncate">{CATEGORY_EMOJI[place.category]} {CATEGORY_LABELS[place.category]}</p>
+                      </div>
+                      <button onClick={() => toggleList(place)} className="text-stone-300 hover:text-red-400 text-base flex-shrink-0">✕</button>
+                    </div>
+                  ))}
+                </div>
+                {showEmailForm && !sent && (
+                  <div className="border-t border-stone-100 pt-3">
+                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.se" className="w-full px-3 py-2 rounded-xl border border-stone-200 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-[#29C4D8]" />
+                    <button onClick={handleSendEmail} disabled={sending || !email} className="w-full py-2 rounded-xl text-sm font-semibold disabled:opacity-50 mb-2" style={{ background: '#29C4D8', color: '#fff' }}>
+                      {sending ? 'Skickar...' : 'Skicka'}
+                    </button>
+                    <label className="flex items-start gap-2 cursor-pointer p-2 rounded-xl border border-stone-100 hover:border-[#29C4D8] transition-colors">
+                      <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0 accent-[#29C4D8]" />
+                      <span className="text-xs text-stone-400 leading-relaxed">
+                        <span className="font-semibold text-stone-700 block">Skicka mig tips framöver</span>
+                        Nya ställen, säsongstips och event. <a href="/integritetspolicy" target="_blank" className="underline">Policy</a>
+                      </span>
+                    </label>
+                    {sendError && <p className="text-red-500 text-xs mt-2">{sendError}</p>}
+                  </div>
+                )}
+                {sent && (
+                  <div className="border-t border-stone-100 pt-3 text-center">
+                    <p className="text-xl mb-1">✉️</p>
+                    <p className="font-semibold text-stone-900 text-sm">Skickat!</p>
+                    <p className="text-stone-500 text-xs">Kolla din inkorg.</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Info-popup för valt ställe */}
+        {/* Mobil: info-popup under kartan */}
         {selectedPlace && (
-          <div className="bg-white rounded-2xl border border-stone-100 shadow-md p-5 flex gap-4">
+          <div className="md:hidden bg-white rounded-2xl border border-stone-100 shadow-md p-5 flex gap-4">
             {selectedPlace.photo_url && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={selectedPlace.photo_url} alt={selectedPlace.name} className="w-24 h-24 rounded-xl object-cover flex-shrink-0" />
+              <img src={selectedPlace.photo_url} alt={selectedPlace.name} className="w-20 h-20 rounded-xl object-cover flex-shrink-0" />
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
@@ -288,85 +389,19 @@ export default function PlaneringsKarta({
                   <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>
                     {CATEGORY_EMOJI[selectedPlace.category]} {CATEGORY_LABELS[selectedPlace.category]}
                   </span>
-                  <h3 className="font-bold text-stone-900 text-lg leading-snug">{selectedPlace.name}</h3>
-                  <p className="text-stone-400 text-sm">{selectedPlace.address}</p>
-                  {selectedPlace.description && (
-                    <p className="text-stone-600 text-sm mt-1 leading-relaxed line-clamp-2">{selectedPlace.description}</p>
-                  )}
+                  <h3 className="font-bold text-stone-900 text-base leading-snug">{selectedPlace.name}</h3>
+                  <p className="text-stone-400 text-xs">{selectedPlace.address}</p>
                 </div>
                 <button onClick={() => setSelectedPlace(null)} className="text-stone-300 hover:text-stone-500 text-xl flex-shrink-0">✕</button>
               </div>
-              <div className="flex items-center gap-4 mt-3 flex-wrap">
-                {selectedPlace.rating && (
-                  <span className="text-amber-500 text-sm font-medium">
-                    ★ {selectedPlace.rating.toFixed(1)}
-                    <span className="text-stone-400 font-normal ml-1">({selectedPlace.user_ratings_total?.toLocaleString('sv-SE')})</span>
-                  </span>
-                )}
-                <button
-                  onClick={() => { toggleList(selectedPlace); if (!isInList(selectedPlace)) setSheetOpen(false) }}
-                  className="px-4 py-1.5 rounded-full text-sm font-semibold transition-all"
-                  style={isInList(selectedPlace) ? { background: '#FFE600', color: '#1a1a1a' } : { background: '#29C4D8', color: '#fff' }}
-                >
-                  {isInList(selectedPlace) ? '✓ Tillagd i listan' : '+ Lägg till i listan'}
-                </button>
-              </div>
+              <button
+                onClick={() => { toggleList(selectedPlace); if (!isInList(selectedPlace)) setSheetOpen(false) }}
+                className="mt-3 px-4 py-1.5 rounded-full text-sm font-semibold"
+                style={isInList(selectedPlace) ? { background: '#FFE600', color: '#1a1a1a' } : { background: '#29C4D8', color: '#fff' }}
+              >
+                {isInList(selectedPlace) ? '✓ Tillagd' : '+ Lägg till'}
+              </button>
             </div>
-          </div>
-        )}
-
-        {/* Desktop-lista */}
-        {myList.length > 0 && (
-          <div className="hidden md:block bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-stone-900 text-lg">Din lista ({myList.length} ställen)</h2>
-              {!showEmailForm && !sent && (
-                <button onClick={() => setShowEmailForm(true)} className="px-4 py-2 rounded-full text-sm font-semibold" style={{ background: '#FFE600', color: '#1a1a1a' }}>
-                  📩 Maila listan
-                </button>
-              )}
-            </div>
-            <div className="space-y-3 mb-4">
-              {myList.map(place => (
-                <div key={place.id} className="flex items-center gap-3">
-                  {place.photo_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={place.photo_url} alt={place.name} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-stone-900 text-sm truncate">{place.name}</p>
-                    <p className="text-stone-400 text-xs truncate">{place.address}</p>
-                  </div>
-                  <button onClick={() => toggleList(place)} className="text-stone-300 hover:text-red-400 text-lg flex-shrink-0">✕</button>
-                </div>
-              ))}
-            </div>
-            {showEmailForm && !sent && (
-              <div className="border-t border-stone-100 pt-4">
-                <p className="text-sm text-stone-500 mb-3">Skriv in din mailadress så skickar vi listan.</p>
-                <div className="flex gap-2 mb-3">
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="din@email.se" className="flex-1 px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#29C4D8]" />
-                  <button onClick={handleSendEmail} disabled={sending || !email} className="px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50" style={{ background: '#29C4D8', color: '#fff' }}>
-                    {sending ? 'Skickar...' : 'Skicka'}
-                  </button>
-                </div>
-                <label className="flex items-start gap-3 cursor-pointer mt-1 p-3 rounded-xl border border-stone-100 hover:border-[#29C4D8] transition-colors">
-                  <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0 accent-[#29C4D8]" />
-                  <span className="text-sm leading-relaxed">
-                    <span className="font-semibold text-stone-800">Skicka mig tips framöver</span>
-                    <span className="text-stone-400 text-xs block mt-0.5">Nya hundvänliga ställen, säsongstips och lokala event — max ett mail i månaden. <a href="/integritetspolicy" target="_blank" className="underline">Integritetspolicy</a></span>
-                  </span>
-                </label>
-                {sendError && <p className="text-red-500 text-sm mt-2">{sendError}</p>}
-              </div>
-            )}
-            {sent && (
-              <div className="border-t border-stone-100 pt-4 text-center">
-                <p className="text-2xl mb-1">✉️</p>
-                <p className="font-semibold text-stone-900">Skickat!</p>
-                <p className="text-stone-500 text-sm">Kolla din inkorg — listan är på väg.</p>
-              </div>
-            )}
           </div>
         )}
       </div>
