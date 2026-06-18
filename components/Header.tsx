@@ -14,6 +14,7 @@ const NAV = [
   { href: '/restauranger', label: 'Restauranger', emoji: '🍽️' },
   { href: '/parker',       label: 'Parker',        emoji: '🌳' },
   { href: '/guide',        label: 'Guide',         emoji: '🐕' },
+  { href: '/planera',      label: 'Planera besök', emoji: '🗺️' },
 ];
 
 export default function Header({ onSubmitClick }: { onSubmitClick?: () => void }) {
