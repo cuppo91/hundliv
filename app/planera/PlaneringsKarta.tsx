@@ -24,7 +24,7 @@ const PIN_COLORS: Record<string, string> = {
   restaurant: '#ef4444',
 }
 
-function HotelSearch({ onSelect }: { onSelect: (lat: number, lng: number, label: string) => void }) {
+function HotelSearch({ onSelect, places }: { onSelect: (lat: number, lng: number, label: string) => void; places: Place[] }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const map = useMap()
 
@@ -39,11 +39,17 @@ function HotelSearch({ onSelect }: { onSelect: (lat: number, lng: number, label:
         const lat = place.geometry.location.lat()
         const lng = place.geometry.location.lng()
         onSelect(lat, lng, place.name ?? place.formatted_address ?? '')
-        map?.panTo({ lat, lng })
-        map?.setZoom(14)
+
+        // Fit bounds to include hotel + all city places
+        if (map) {
+          const bounds = new window.google.maps.LatLngBounds()
+          bounds.extend({ lat, lng })
+          places.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }))
+          map.fitBounds(bounds, 60)
+        }
       }
     })
-  }, [map, onSelect])
+  }, [map, onSelect, places])
 
   return (
     <div className="relative">
@@ -218,7 +224,7 @@ export default function PlaneringsKarta({
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={['places']}>
       <div className="space-y-4 pb-24 md:pb-0">
         {/* Hotellsökning */}
-        <HotelSearch onSelect={handleHotelSelect} />
+        <HotelSearch onSelect={handleHotelSelect} places={places} />
 
         {/* Filterknappar */}
         <div className="flex gap-2 flex-wrap">
