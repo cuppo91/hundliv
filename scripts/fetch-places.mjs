@@ -22,9 +22,9 @@ for (const line of envFile.split('\n')) {
 }
 
 const CITIES = {
-  malmo:     { id: 'malmo',     name: 'Malmö',     location: 'Malmö, Sweden' },
-  goteborg:  { id: 'goteborg',  name: 'Göteborg',  location: 'Gothenburg, Sweden' },
-  stockholm: { id: 'stockholm', name: 'Stockholm', location: 'Stockholm, Sweden' },
+  malmo:     { id: 'malmo',     name: 'Malmö',     location: 'Malmö, Sweden',      lat: 55.6050, lng: 13.0038, radiusKm: 20 },
+  goteborg:  { id: 'goteborg',  name: 'Göteborg',  location: 'Gothenburg, Sweden', lat: 57.7089, lng: 11.9746, radiusKm: 20 },
+  stockholm: { id: 'stockholm', name: 'Stockholm', location: 'Stockholm, Sweden',  lat: 59.3293, lng: 18.0686, radiusKm: 25 },
 }
 
 const supabase = createClient(
@@ -81,9 +81,11 @@ const SEARCH_QUERIES = [
   { query: 'veterinär',             category: 'vet' },
 ]
 
-async function searchPlaces(query, location) {
+async function searchPlaces(query, city) {
   const url = new URL('https://maps.googleapis.com/maps/api/place/textsearch/json')
-  url.searchParams.set('query', `${query} ${location}`)
+  url.searchParams.set('query', `${query} ${city.location}`)
+  url.searchParams.set('location', `${city.lat},${city.lng}`)
+  url.searchParams.set('radius', String(city.radiusKm * 1000))
   url.searchParams.set('key', GOOGLE_API_KEY)
   const res = await fetch(url.toString())
   const data = await res.json()
@@ -151,7 +153,7 @@ async function fetchForCity(cityId) {
 
   for (const { query, category } of SEARCH_QUERIES) {
     console.log(`\n  Searching: "${query}"`)
-    const results = await searchPlaces(query, city.location)
+    const results = await searchPlaces(query, city)
     console.log(`  Found ${results.length} results`)
 
     for (const place of results) {
