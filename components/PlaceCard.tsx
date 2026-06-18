@@ -36,7 +36,10 @@ const FALLBACK_EMOJI: Record<string, string> = {
   vet: '🏥',
 };
 
-export default function PlaceCard({ place, onClick }: { place: Place; onClick?: () => void }) {
+export default function PlaceCard({ place, onClick, distance }: { place: Place; onClick?: () => void; distance?: number }) {
+  const distanceLabel = distance !== undefined
+    ? distance < 1 ? `${Math.round(distance * 1000)} m` : `${distance.toFixed(1)} km`
+    : null
   return (
     <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 border border-stone-100 cursor-pointer">
       {/* Image */}
@@ -85,7 +88,10 @@ export default function PlaceCard({ place, onClick }: { place: Place; onClick?: 
             <span className="text-xs text-stone-300">Inget betyg</span>
           )}
 
-          <span className="text-xs text-stone-300">Tryck för info →</span>
+          {distanceLabel
+            ? <span className="text-xs font-semibold" style={{ color: '#29C4D8' }}>📍 {distanceLabel}</span>
+            : <span className="text-xs text-stone-300">Tryck för info →</span>
+          }
         </div>
       </div>
     </div>
