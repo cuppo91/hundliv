@@ -279,11 +279,11 @@ export default function PlaneringsKarta({
           </div>
 
           {/* Desktop sidopanel */}
-          <div className="hidden md:flex flex-col gap-3 w-80 flex-shrink-0" style={{ height: 520, overflowY: 'auto' }}>
+          <div className="hidden md:flex flex-col gap-3 w-80 flex-shrink-0" style={{ height: 520 }}>
 
             {/* Info-kort eller placeholder */}
             {selectedPlace ? (
-              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden flex-shrink-0">
                 {selectedPlace.photo_url && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={selectedPlace.photo_url} alt={selectedPlace.name} className="w-full h-36 object-cover" />
@@ -316,7 +316,7 @@ export default function PlaneringsKarta({
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-dashed border-stone-200 p-6 text-center">
+              <div className="bg-white rounded-2xl border border-dashed border-stone-200 p-6 text-center flex-shrink-0">
                 <p className="text-3xl mb-2">🗺️</p>
                 <p className="text-stone-500 text-sm">Klicka på ett ställe på kartan för att se mer info och lägga till det i din lista.</p>
               </div>
@@ -324,7 +324,7 @@ export default function PlaneringsKarta({
 
             {/* Lista */}
             {myList.length > 0 && (
-              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 flex-1">
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-4 flex-1 overflow-y-auto">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="font-bold text-stone-900 text-sm">Din lista ({myList.length})</h2>
                   {!showEmailForm && !sent && (
