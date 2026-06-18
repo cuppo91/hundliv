@@ -138,7 +138,7 @@ export default function PlaneringsKarta({
           <Map
             defaultCenter={{ lat: cityCenter[1], lng: cityCenter[0] }}
             defaultZoom={12}
-            mapId="hundliv-planera"
+            mapId="6a43dc81cfda481ded1fa497"
             gestureHandling="greedy"
             disableDefaultUI={false}
           >
