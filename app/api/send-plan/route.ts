@@ -32,7 +32,7 @@ function buildPlaceRow(place: Place): string {
             <td style="vertical-align: top;">
               <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1a1a1a;">${place.name}</p>
               <p style="margin: 0 0 6px; font-size: 13px; color: #888;">${place.address}</p>
-              ${place.description ? `<p style="margin: 0 0 8px; font-size: 13px; color: #555; line-height: 1.5;">${place.description}</p>` : ''}
+              ${place.description ? `<p style="margin: 0 0 8px; font-size: 13px; color: #555; line-height: 1.5;">${place.description.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ')}</p>` : ''}
               <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   ${place.rating ? `<td style="padding-right: 12px;"><span style="font-size: 13px; color: #f59e0b; font-weight: 600;">★ ${place.rating.toFixed(1)}</span></td>` : ''}
