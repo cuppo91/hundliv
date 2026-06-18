@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { error } = await resend.emails.send({
-    from: 'Hundliv <noreply@hundliv.nu>',
+    from: 'Hundliv <noreply@hundlivmalmo.se>',
     to: email,
     subject: `Din hundvänliga lista för ${cityName} 🐾`,
     html: buildEmailHtml(places, cityName),
