@@ -5,13 +5,21 @@ import type { Place } from '@/lib/supabase'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const CATEGORY_LABELS: Record<string, string> = {
-  park: 'Park',
-  cafe: 'Café',
-  restaurant: 'Restaurang',
+  park: 'Parker',
+  cafe: 'Caféer',
+  restaurant: 'Restauranger',
 }
 
-function buildEmailHtml(places: Place[], cityName: string): string {
-  const placeRows = places.map(place => `
+const CATEGORY_EMOJI: Record<string, string> = {
+  park: '🌳',
+  cafe: '☕',
+  restaurant: '🍽️',
+}
+
+const CATEGORY_ORDER = ['restaurant', 'cafe', 'park']
+
+function buildPlaceRow(place: Place): string {
+  return `
     <tr>
       <td style="padding: 16px 0; border-bottom: 1px solid #f0ede8; vertical-align: top;">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -22,9 +30,6 @@ function buildEmailHtml(places: Place[], cityName: string): string {
                 style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; display: block;" />
             </td>` : ''}
             <td style="vertical-align: top;">
-              <p style="margin: 0 0 2px; font-size: 11px; font-weight: 600; color: #29C4D8; text-transform: uppercase; letter-spacing: 0.5px;">
-                ${CATEGORY_LABELS[place.category] ?? place.category}
-              </p>
               <p style="margin: 0 0 4px; font-size: 16px; font-weight: 700; color: #1a1a1a;">${place.name}</p>
               <p style="margin: 0 0 6px; font-size: 13px; color: #888;">${place.address}</p>
               ${place.description ? `<p style="margin: 0 0 8px; font-size: 13px; color: #555; line-height: 1.5;">${place.description}</p>` : ''}
@@ -32,7 +37,7 @@ function buildEmailHtml(places: Place[], cityName: string): string {
                 <tr>
                   ${place.rating ? `<td style="padding-right: 12px;"><span style="font-size: 13px; color: #f59e0b; font-weight: 600;">★ ${place.rating.toFixed(1)}</span></td>` : ''}
                   ${place.website ? `<td style="padding-right: 12px;"><a href="${place.website}" style="font-size: 13px; color: #29C4D8; font-weight: 600; text-decoration: none;">Hemsida →</a></td>` : ''}
-                  ${place.phone ? `<td><span style="font-size: 13px; color: #888;">${place.phone}</span></td>` : ''}
+                  ${place.phone ? `<td><a href="tel:${place.phone.replace(/\s/g, '')}" style="font-size: 13px; color: #555; text-decoration: none;">${place.phone}</a></td>` : ''}
                 </tr>
               </table>
               <p style="margin: 8px 0 0;">
@@ -44,6 +49,24 @@ function buildEmailHtml(places: Place[], cityName: string): string {
         </table>
       </td>
     </tr>
+  `
+}
+
+function buildEmailHtml(places: Place[], cityName: string): string {
+  // Group by category in defined order
+  const grouped = CATEGORY_ORDER
+    .map(cat => ({ cat, items: places.filter(p => p.category === cat) }))
+    .filter(g => g.items.length > 0)
+
+  const sections = grouped.map(({ cat, items }) => `
+    <tr>
+      <td style="padding: 20px 0 4px;">
+        <p style="margin: 0; font-size: 13px; font-weight: 700; color: #29C4D8; text-transform: uppercase; letter-spacing: 1px;">
+          ${CATEGORY_EMOJI[cat]} ${CATEGORY_LABELS[cat] ?? cat}
+        </p>
+      </td>
+    </tr>
+    ${items.map(buildPlaceRow).join('')}
   `).join('')
 
   return `
@@ -64,7 +87,7 @@ function buildEmailHtml(places: Place[], cityName: string): string {
     <tr>
       <td style="background: #fff; padding: 8px 32px 32px; border-radius: 0 0 16px 16px;">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
-          ${placeRows}
+          ${sections}
         </table>
       </td>
     </tr>
