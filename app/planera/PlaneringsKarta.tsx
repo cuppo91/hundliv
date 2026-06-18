@@ -344,11 +344,11 @@ export default function PlaneringsKarta({
                     {sending ? 'Skickar...' : 'Skicka'}
                   </button>
                 </div>
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0" />
-                  <span className="text-xs text-stone-400 leading-relaxed">
-                    Ja, jag vill få hundvänliga tips och nyheter från Hundliv {cityName} via mail. Du kan avprenumerera när som helst.{' '}
-                    <a href="/integritetspolicy" target="_blank" className="underline hover:text-stone-600">Integritetspolicy</a>
+                <label className="flex items-start gap-3 cursor-pointer mt-1 p-3 rounded-xl border border-stone-100 hover:border-[#29C4D8] transition-colors">
+                  <input type="checkbox" checked={newsletter} onChange={e => setNewsletter(e.target.checked)} className="mt-0.5 flex-shrink-0 accent-[#29C4D8]" />
+                  <span className="text-sm leading-relaxed">
+                    <span className="font-semibold text-stone-800">Skicka mig tips framöver</span>
+                    <span className="text-stone-400 text-xs block mt-0.5">Nya hundvänliga ställen, säsongstips och lokala event — max ett mail i månaden. <a href="/integritetspolicy" target="_blank" className="underline">Integritetspolicy</a></span>
                   </span>
                 </label>
                 {sendError && <p className="text-red-500 text-sm mt-2">{sendError}</p>}
