@@ -7,7 +7,7 @@ import { getCityConfig } from "@/config/cities";
 const LOGO: Record<string, { src: string; width: number; height: number }> = {
   malmo:     { src: '/logo-malmo.svg',    width: 260, height: 41 },
   goteborg:  { src: '/logo-goteborg.svg', width: 210, height: 29 },
-  stockholm: { src: '/logo-stockholm.svg', width: 210, height: 29 },
+  stockholm: { src: '/logo-stockholm.svg', width: 280, height: 56 },
 };
 
 const NAV = [
