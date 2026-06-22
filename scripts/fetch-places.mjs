@@ -75,6 +75,7 @@ Reply with only a number like 0.0, 1.0, or 2.0`
 const SEARCH_QUERIES = [
   { query: 'hundvänlig restaurang', category: 'restaurant' },
   { query: 'hundvänligt café',      category: 'cafe' },
+  { query: 'café med hund',        category: 'cafe' },
   { query: 'hundrastgård',          category: 'park' },
   { query: 'hundpark',              category: 'park' },
   { query: 'hundbutik',             category: 'shop' },
