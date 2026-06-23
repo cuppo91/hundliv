@@ -139,6 +139,106 @@ const articles: ArticleTemplate[] = [
     season: null,
   },
 
+  // ── Stockholm ─────────────────────────────────────────────────────────────
+  {
+    slug: 'basta-hundrastgardarna-i-stockholm',
+    title: 'Bästa hundrastgårdarna i Stockholm — vår guide',
+    metaTitle: 'Bästa Hundrastgårdarna i Stockholm 2025 — Guide för hundägare',
+    metaDescription: 'Vi har rankat de bästa hundrastgårdarna i Stockholm baserat på tusentals omdömen. Hitta hundrastgård nära dig med adresser.',
+    publishedAt: '2026-06-23',
+    category: 'Parker',
+    placeCategories: ['park'],
+    cityId: 'stockholm',
+    intro: 'Stockholm erbjuder ett rikt utbud av hundrastgårdar och hundparker — från inhägnade rastgårdar i stadsdelarna till stora naturområden vid vattnet. Vi har rankat de bästa ställena baserat på tusentals Google-omdömen kombinerat med hur hundspecifika de är.',
+    tips: [
+      {
+        heading: 'Tips för besök i hundrastgård',
+        body: 'Ta alltid med vattenskål och vatten, särskilt under sommaren. Ha koll på din hunds kroppsspråk — inte alla hundar trivs i grupp. Plocka alltid upp efter din hund. De flesta rastgårdar i Stockholm är gratis att använda.',
+      },
+    ],
+    season: null,
+  },
+  {
+    slug: 'hundvanliga-cafeer-i-stockholm',
+    title: 'Hundvänliga caféer i Stockholm — 5 ställen du måste testa',
+    metaTitle: 'Hundvänliga Caféer i Stockholm — Bästa fikastälena för hundägare',
+    metaDescription: 'Hitta de bästa hundvänliga caféerna i Stockholm. Rankade baserat på omdömen och hur hundvänliga de faktiskt är.',
+    publishedAt: '2026-06-23',
+    category: 'Caféer',
+    placeCategories: ['cafe'],
+    cityId: 'stockholm',
+    intro: 'Stockholm har ett stort utbud av caféer men det kan vara svårt att veta vilka som verkligen välkomnar hunden. Vi har gått igenom hundratals omdömen för att hitta de caféer som tar emot fyrbenta gäster — rankade efter betyg och hundvänlighet.',
+    tips: [
+      {
+        heading: 'Tips inför cafébesöket',
+        body: 'Ring alltid och bekräfta att hundar är välkomna inomhus — de flesta caféer välkomnar hundar på uteserveringen men färre inomhus. Ha alltid vatten med till hunden.',
+      },
+    ],
+    season: null,
+  },
+  {
+    slug: 'hundvanliga-restauranger-i-stockholm',
+    title: 'Hundvänliga restauranger i Stockholm — topp 5',
+    metaTitle: 'Hundvänliga Restauranger i Stockholm — Rankade efter omdömen',
+    metaDescription: 'De bästa hundvänliga restaurangerna i Stockholm rankade efter betyg och hundvänlighet. Hitta restauranger där hunden är välkommen.',
+    publishedAt: '2026-06-23',
+    category: 'Restauranger',
+    placeCategories: ['restaurant'],
+    cityId: 'stockholm',
+    intro: 'Stockholm har många restauranger med hundvänliga uteserveringar, men det kan vara svårt att veta vilka som verkligen välkomnar hundar. Vi har rankat de bästa baserat på kundomdömen och hundvänlighet.',
+    tips: [
+      {
+        heading: 'Tips för restaurangbesök med hund',
+        body: 'Ring alltid i förväg och bekräfta hundpolicyn. Ha en koppel och vatten med. Välj bord i utkanten av uteserveringen så stör inte hunden andra gäster.',
+      },
+    ],
+    season: null,
+  },
+  {
+    slug: 'hundvanliga-uteserveringar-stockholm',
+    title: 'Bästa uteserveringarna med hund i Stockholm',
+    metaTitle: 'Hundvänliga Uteserveringar i Stockholm — Bästa ställena sommartid',
+    metaDescription: 'Hitta de bästa uteserveringarna i Stockholm där hunden är välkommen. Rankade efter omdömen och hundvänlighet — perfekt för sommaren.',
+    publishedAt: '2026-06-23',
+    category: 'Sommar',
+    placeCategories: ['restaurant', 'cafe'],
+    cityId: 'stockholm',
+    season: 'summer',
+    intro: 'Sommaren i Stockholm bjuder på fantastiska uteserveringar vid vattnet och i parkerna — och många välkomnar hundar. Vi har rankat de bästa hundvänliga uteserveringarna baserat på omdömen och hur välkomnande de faktiskt är mot fyrbenta gäster.',
+    tips: [
+      {
+        heading: 'Så lyckas du med uteservering med hund',
+        body: 'Ring alltid i förväg och bekräfta att hundar är välkomna — reglerna varierar. Välj ett bord i utkanten så sitter hunden tryggt utan att störa andra gäster. Ta med en filt för hunden att ligga på och egna vattenskål. Undvik peak-tider om din hund är stresskänslig.',
+      },
+      {
+        heading: 'Vad säger lagen?',
+        body: 'Hundar är tillåtna på uteserveringar i Sverige enligt livsmedelslagen, men restaurangen har rätt att sätta egna regler. En väluppfostrad hund som ligger still brukar alltid vara välkommen.',
+      },
+    ],
+  },
+  {
+    slug: 'hundbad-och-badplatser-stockholm',
+    title: 'Badplatser för hundar i Stockholm — var får hunden bada?',
+    metaTitle: 'Hundbad i Stockholm — Badplatser där hunden får bada',
+    metaDescription: 'Komplett guide till hundbad och hundvänliga badplatser i Stockholm. Var får hunden bada fritt? Rankade efter omdömen.',
+    publishedAt: '2026-06-23',
+    category: 'Sommar',
+    placeCategories: ['park'],
+    cityId: 'stockholm',
+    season: 'summer',
+    intro: 'Stockholm med sin unika skärgård och många sjöar erbjuder fantastiska möjligheter för hundägare på sommaren. Vi har rankat de bästa hundvänliga badplatserna och hundbadet baserat på omdömen och hur hundspecifika de är.',
+    tips: [
+      {
+        heading: 'Regler för hundbad i Stockholm',
+        body: 'På de flesta badplatser i Stockholm är hundar inte välkomna under badsäsongen. Det finns dock utpekade platser där hundar får bada fritt. Kolla alltid skyltar och Stockholms stads hemsida för aktuella regler.',
+      },
+      {
+        heading: 'Tips för bad med hund',
+        body: 'Ta med färskvatten — sjövatten törstigör hunden. Undvik bad under de varmaste timmarna på dagen. Skölj av hunden efter bad. Ha alltid koll på strömmar och djup.',
+      },
+    ],
+  },
+
   // ── Sommarartiklar ────────────────────────────────────────────────────────
   {
     slug: 'hundvanliga-uteserveringar-malmo',
