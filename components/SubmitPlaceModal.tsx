@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { getCityConfig } from "@/config/cities";
-import { Turnstile } from "@marsidev/react-turnstile";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 const CATEGORIES = [
   { id: 'restaurant', label: 'Restaurang' },
@@ -20,7 +20,7 @@ export default function SubmitPlaceModal({ onClose }: { onClose: () => void }) {
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const turnstileRef = useRef<{ reset: () => void }>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
