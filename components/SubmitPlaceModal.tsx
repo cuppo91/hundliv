@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { getCityConfig } from "@/config/cities";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const CATEGORIES = [
   { id: 'restaurant', label: 'Restaurang' },
   { id: 'cafe',       label: 'Café' },
   { id: 'park',       label: 'Park / Hundrastgård' },
-  { id: 'activity',   label: 'Aktivitet' },
   { id: 'shop',       label: 'Butik' },
   { id: 'vet',        label: 'Veterinär' },
 ];
@@ -19,15 +19,24 @@ export default function SubmitPlaceModal({ onClose }: { onClose: () => void }) {
   });
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<{ reset: () => void }>(null);
+
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!turnstileToken) {
+      setMessage('Vänta på säkerhetskontrollen.');
+      setState('error');
+      return;
+    }
     setState('loading');
     try {
       const res = await fetch('/api/submit-place', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ ...form, city_id: city.id }),
+        body: JSON.stringify({ ...form, city_id: city.id, turnstileToken }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -40,6 +49,8 @@ export default function SubmitPlaceModal({ onClose }: { onClose: () => void }) {
     } catch {
       setMessage('Något gick fel. Försök igen.');
       setState('error');
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     }
   }
 
@@ -55,12 +66,14 @@ export default function SubmitPlaceModal({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-2xl leading-none">&times;</button>
         </div>
 
-        {state === 'success' || state === 'error' ? (
+        {state === 'success' || (state === 'error' && !turnstileToken && message === 'Vänta på säkerhetskontrollen.') ? (
           <div className="p-6 text-center space-y-4">
             <p className="text-stone-700">{message}</p>
-            <button onClick={onClose} className="px-6 py-2 rounded-full text-white text-sm font-semibold" style={{ background: '#29C4D8' }}>
-              Stäng
-            </button>
+            {state === 'success' && (
+              <button onClick={onClose} className="px-6 py-2 rounded-full text-white text-sm font-semibold" style={{ background: '#29C4D8' }}>
+                Stäng
+              </button>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -107,7 +120,19 @@ export default function SubmitPlaceModal({ onClose }: { onClose: () => void }) {
                 placeholder="Anna" />
             </div>
 
-            <button type="submit" disabled={state === 'loading'}
+            {siteKey && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={siteKey}
+                onSuccess={setTurnstileToken}
+                onExpire={() => setTurnstileToken(null)}
+                options={{ theme: 'light' }}
+              />
+            )}
+
+            {state === 'error' && <p className="text-red-500 text-sm">{message}</p>}
+
+            <button type="submit" disabled={state === 'loading' || (!!siteKey && !turnstileToken)}
               className="w-full py-3 rounded-full text-white font-semibold text-sm transition-opacity disabled:opacity-60"
               style={{ background: '#29C4D8' }}>
               {state === 'loading' ? 'Skickar...' : 'Skicka tips 🐾'}
