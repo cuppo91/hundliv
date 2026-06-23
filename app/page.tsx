@@ -45,8 +45,7 @@ export default function Home() {
 
         let query = supabase.from('places').select('*')
           .order('sponsored', { ascending: false })
-          .order('score', { ascending: false })
-          .gte('dog_bonus', 0.5);
+          .order('score', { ascending: false });
         for (const [key, value] of Object.entries(filters)) {
           query = query.eq(key, value);
         }

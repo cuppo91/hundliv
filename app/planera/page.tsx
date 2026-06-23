@@ -29,7 +29,6 @@ export default async function PlaneraSida() {
     .eq('city_id', city.id)
     .eq('status', 'approved')
     .in('category', ['restaurant', 'cafe', 'park'])
-    .gte('dog_bonus', 0.5)
     .order('score', { ascending: false })
 
   const places: Place[] = data ?? []
