@@ -1,13 +1,12 @@
 "use client";
 
-export type Category = 'all' | 'restaurant' | 'cafe' | 'park' | 'activity' | 'shop' | 'vet';
+export type Category = 'all' | 'restaurant' | 'cafe' | 'park' | 'shop' | 'vet';
 
 const CATEGORIES: { id: Category; label: string; emoji: string }[] = [
   { id: 'all',        label: 'Alla ställen', emoji: '🗺️' },
   { id: 'restaurant', label: 'Restauranger',  emoji: '🍽️' },
   { id: 'cafe',       label: 'Caféer',        emoji: '☕' },
   { id: 'park',       label: 'Parker',        emoji: '🌳' },
-  { id: 'activity',   label: 'Aktiviteter',   emoji: '🎾' },
   { id: 'shop',       label: 'Butiker',       emoji: '🛍️' },
   { id: 'vet',        label: 'Veterinärer',   emoji: '🏥' },
 ];
