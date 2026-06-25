@@ -142,6 +142,20 @@ export async function POST(req: NextRequest) {
   // Lookup place on Google to enrich data
   const googleData = await lookupGooglePlace(name, address)
 
+  // Check if place already exists in database
+  let duplicate_of: string | null = null
+  if (googleData.google_place_id) {
+    const { data: existing } = await supabase
+      .from('places')
+      .select('id, name, status')
+      .eq('google_place_id', googleData.google_place_id)
+      .eq('city_id', city_id)
+      .single()
+    if (existing) {
+      duplicate_of = existing.id
+    }
+  }
+
   // AI review
   const ai = await reviewWithAI({ name, category, address, submission_note })
 
@@ -155,15 +169,19 @@ export async function POST(req: NextRequest) {
     city_id,
     lat: googleData.lat,
     lng: googleData.lng,
-    google_place_id: googleData.google_place_id,
+    google_place_id: null,
     rating: googleData.rating,
     user_ratings_total: googleData.user_ratings_total,
     phone: googleData.phone,
     photo_url: googleData.photo_url,
     status: ai.status,
+    submission_note: [
+      submission_note || null,
+      duplicate_of ? `⚠️ Möjlig dubblett av befintligt ställe (id: ${duplicate_of})` : null,
+    ].filter(Boolean).join(' | ') || null,
   })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  return NextResponse.json({ status: ai.status, reason: ai.reason })
+  return NextResponse.json({ status: ai.status, reason: ai.reason, duplicate: !!duplicate_of })
 }

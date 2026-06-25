@@ -145,7 +145,12 @@ export default function AdminPage() {
                         <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">{place.city_id}</span>
                       </div>
                       <p className="text-sm text-stone-500 mt-1">{place.address}</p>
-                      {place.submission_note && <p className="text-sm text-stone-600 mt-2 bg-stone-50 rounded-lg p-2 italic">"{place.submission_note}"</p>}
+                      {place.submission_note && place.submission_note.includes('⚠️ Möjlig dubblett') && (
+                        <p className="text-sm text-amber-700 mt-2 bg-amber-50 border border-amber-200 rounded-lg p-2 font-medium">
+                          ⚠️ Detta ställe finns troligen redan i databasen — kontrollera innan du godkänner.
+                        </p>
+                      )}
+                      {place.submission_note && <p className="text-sm text-stone-600 mt-2 bg-stone-50 rounded-lg p-2 italic">"{place.submission_note.replace(/ \| ⚠️.*$/, '')}"</p>}
                       <div className="flex gap-3 mt-1 text-xs text-stone-400 flex-wrap">
                         {place.submitted_by && <span>Tipsat av: {place.submitted_by}</span>}
                         {place.website && <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-cyan-600 hover:underline">{place.website}</a>}
