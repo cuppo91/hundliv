@@ -164,7 +164,10 @@ export async function POST(req: NextRequest) {
     category,
     address,
     website: website || googleData.website || null,
-    submission_note: submission_note || null,
+    submission_note: [
+      submission_note || null,
+      duplicate_of ? `⚠️ Möjlig dubblett av befintligt ställe (id: ${duplicate_of})` : null,
+    ].filter(Boolean).join(' | ') || null,
     submitted_by: submitted_by || null,
     city_id,
     lat: googleData.lat,
@@ -175,10 +178,6 @@ export async function POST(req: NextRequest) {
     phone: googleData.phone,
     photo_url: googleData.photo_url,
     status: ai.status,
-    submission_note: [
-      submission_note || null,
-      duplicate_of ? `⚠️ Möjlig dubblett av befintligt ställe (id: ${duplicate_of})` : null,
-    ].filter(Boolean).join(' | ') || null,
   })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
